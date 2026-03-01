@@ -2,7 +2,7 @@
 
 ## Safe, controlled Elytra launch system with automatic gliding
 
-<img width="1493" height="861" alt="RelishTravel-Banner" src="https://github.com/user-attachments/assets/7d674cfe-d020-4428-9cc5-0d99c1f7e907" />
+<img width="1493" height="861" alt="RelishTravel-Banner" src="https://github.com/user-attachments/assets/1fce8291-bd0b-4137-ae8e-cba664f8dc5a" />
 
 </div>
 
@@ -200,5 +200,6 @@ Create custom languages in `lang/[code].yml`
 
 **Made with ❤️ by M5LB**
 </div>
+
 
 
