@@ -2,24 +2,24 @@
 // Enhanced with theme toggle, mobile sidebar, and improved navigation
 
 const PAGES = [
-  { file: 'README.md', title: 'Home', section: null },
-  { file: 'Installation.md', title: 'Installation', section: null },
-  { file: 'QuickStart.md', title: 'Quick Start', section: null },
+  { file: 'README.md', title: 'Home', section: null, icon: '🏠' },
+  { file: 'Installation.md', title: 'Installation', section: null, icon: '📥' },
+  { file: 'QuickStart.md', title: 'Quick Start', section: null, icon: '⚡' },
   
-  { file: 'Configuration.md', title: 'Configuration Guide', section: 'Configuration' },
-  { file: 'Permissions.md', title: 'Permissions', section: 'Configuration' },
-  { file: 'Languages.md', title: 'Language Files', section: 'Configuration' },
+  { file: 'Configuration.md', title: 'Configuration Guide', section: 'Configuration', icon: '⚙️' },
+  { file: 'Permissions.md', title: 'Permissions', section: 'Configuration', icon: '🔐' },
+  { file: 'Languages.md', title: 'Language Files', section: 'Configuration', icon: '🌐' },
   
-  { file: 'LaunchSystem.md', title: 'Launch System', section: 'Features' },
-  { file: 'BoostSystem.md', title: 'Boost System', section: 'Features' },
-  { file: 'SafetyFeatures.md', title: 'Safety Features', section: 'Features' },
-  { file: 'VisualEffects.md', title: 'Visual Effects', section: 'Features' },
+  { file: 'LaunchSystem.md', title: 'Launch System', section: 'Features', icon: '🚀' },
+  { file: 'BoostSystem.md', title: 'Boost System', section: 'Features', icon: '🔋' },
+  { file: 'SafetyFeatures.md', title: 'Safety Features', section: 'Features', icon: '🛡️' },
+  { file: 'VisualEffects.md', title: 'Visual Effects', section: 'Features', icon: '✨' },
   
-  { file: 'Commands.md', title: 'Commands', section: 'Reference' },
-  { file: 'Troubleshooting.md', title: 'Troubleshooting', section: 'Reference' },
-  { file: 'API.md', title: 'API', section: 'Reference' },
+  { file: 'Commands.md', title: 'Commands', section: 'Reference', icon: '⌨️' },
+  { file: 'Troubleshooting.md', title: 'Troubleshooting', section: 'Reference', icon: '🩺' },
+  { file: 'API.md', title: 'API', section: 'Reference', icon: '🧩' },
   
-  { file: 'Changelog.md', title: 'Changelog', section: null },
+  { file: 'Changelog.md', title: 'Changelog', section: null, icon: '📝' },
 ];
 
 // DOM Elements
@@ -32,6 +32,8 @@ const lastUpdated = el('#last-updated');
 const themeToggle = el('#theme-toggle');
 const sidebarToggle = el('#sidebar-toggle');
 const sidebar = el('#sidebar');
+const searchIndex = new Map();
+let searchIndexPromise = null;
 
 // Theme Management
 function initTheme() {
@@ -75,19 +77,82 @@ function normalizeHash(hash) {
   return entry ? entry.file : 'README.md';
 }
 
+function stripMarkdown(md) {
+  return md
+    .replace(/```[\s\S]*?```/g, ' ')
+    .replace(/`[^`]*`/g, ' ')
+    .replace(/!\[[^\]]*]\([^)]+\)/g, ' ')
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/^#{1,6}\s+/gm, '')
+    .replace(/[>*_~\-\[\]\(\)]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase();
+}
+
+async function buildSearchIndex() {
+  if (searchIndexPromise) {
+    return searchIndexPromise;
+  }
+
+  searchIndexPromise = Promise.all(
+    PAGES.map(async (page) => {
+      try {
+        const res = await fetch(page.file + `?search=${Date.now()}`);
+        if (!res.ok) {
+          searchIndex.set(page.file, '');
+          return;
+        }
+        const md = await res.text();
+        searchIndex.set(page.file, stripMarkdown(md));
+      } catch {
+        searchIndex.set(page.file, '');
+      }
+    })
+  );
+
+  return searchIndexPromise;
+}
+
+function escapeHtml(text) {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function matchesSearchQuery(page, query) {
+  const q = query.trim().toLowerCase();
+  if (!q) {
+    return true;
+  }
+
+  const tokens = q.split(/\s+/).filter(Boolean);
+  const title = page.title.toLowerCase();
+  const file = page.file.toLowerCase();
+  const content = searchIndex.get(page.file) || '';
+
+  return tokens.every((token) =>
+    title.includes(token) || file.includes(token) || content.includes(token)
+  );
+}
+
 // Sidebar Builder
 function buildSidebar(filter = '') {
-  const q = filter.trim().toLowerCase();
+  const q = filter.trim();
   let html = '';
   let currentSection = null;
+  let hasResults = false;
   
   PAGES.forEach(p => {
-    // Filter check
-    if (q && !p.title.toLowerCase().includes(q) && !p.file.toLowerCase().includes(q)) {
+    if (q && !matchesSearchQuery(p, q)) {
       return;
     }
-    
-    // Add section header if new section
+
+    hasResults = true;
+
     if (p.section !== currentSection) {
       if (p.section) {
         html += `<div class="nav-section">${p.section}</div>`;
@@ -95,11 +160,20 @@ function buildSidebar(filter = '') {
       currentSection = p.section;
     }
     
-    // Add page link
-    html += `<a href="#/${encodeURIComponent(p.file)}" data-file="${p.file}">${p.title}</a>`;
+    html += `<a href="#/${encodeURIComponent(p.file)}" data-file="${p.file}"><span class="nav-icon" aria-hidden="true">${p.icon || '•'}</span><span class="nav-label">${p.title}</span></a>`;
   });
+
+  if (q && !hasResults) {
+    html = `<div class="nav-empty">No content matches for "<code>${escapeHtml(q)}</code>".</div>`;
+  }
   
   nav.innerHTML = html;
+
+  const currentFile = normalizeHash(location.hash);
+  const activeLink = nav.querySelector(`a[data-file="${currentFile}"]`);
+  if (activeLink) {
+    activeLink.classList.add('active');
+  }
   
   // Add click handlers for mobile
   nav.querySelectorAll('a').forEach(link => {
@@ -262,7 +336,16 @@ function route() {
 
 // Search with keyboard shortcut
 function initSearch() {
-  search.addEventListener('input', (e) => buildSidebar(e.target.value));
+  search.addEventListener('input', async (e) => {
+    const q = e.target.value;
+    if (!q.trim()) {
+      buildSidebar();
+      return;
+    }
+
+    await buildSearchIndex();
+    buildSidebar(q);
+  });
   
   // Ctrl+K or Cmd+K to focus search
   document.addEventListener('keydown', (e) => {
@@ -287,6 +370,7 @@ function init() {
   buildSidebar();
   route();
   initSearch();
+  buildSearchIndex();
   
   // Event listeners
   window.addEventListener('hashchange', route);
