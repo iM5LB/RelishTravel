@@ -2,6 +2,21 @@
 
 All notable changes to RelishTravel.
 
+## [1.0.3] - 2026-03-17
+
+### Fixed
+
+**Boost Permission Limits:**
+- Fixed custom boost permission nodes not being recognized from config when keys contain dots (example: `relishtravel.boost.vip-plus`).
+- Permission limits now take precedence when the player has any matching boost permission; `default-limit` is only used when none match.
+
+**Normal Elytra Boosting:**
+- Fixed an exploit where players gliding with a normal Elytra (no RelishTravel launch) could get effectively unlimited boosts.
+- Action bar now correctly shows the boost counter while gliding with a normal Elytra.
+
+**LuckPerms / Reload:**
+- Dynamic boost permission nodes from `launch.boost.permission-limits` are now registered on startup and `/rt reload` so permission suggestions can appear.
+
 ## [1.0.2] - 2026-02-15
 
 ### Fixed

@@ -4,7 +4,7 @@ main: relish.relishTravel.RelishTravel
 api-version: '1.20'
 author: RelishDev
 description: Safe, controlled Elytra launch system with automatic gliding
-website: https://github.com/relish/RelishTravel
+website: https://modrinth.com/plugin/relishtravel
 
 commands:
   relishtravel:

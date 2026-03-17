@@ -56,7 +56,7 @@ public class RelishTravel extends JavaPlugin {
             this.rightClickBoostHandler = new BoostHandler(this, configManager, messageManager, launchHandler);
             debug("BoostHandler initialized");
             
-            this.speedDisplayHandler = new SpeedDisplayHandler(this, messageManager, launchHandler);
+            this.speedDisplayHandler = new SpeedDisplayHandler(this, messageManager, launchHandler, rightClickBoostHandler);
             debug("SpeedDisplayHandler initialized");
             
             this.persistenceHandler = new PersistenceHandler(this, configManager, launchHandler, elytraHandler);
@@ -67,6 +67,7 @@ public class RelishTravel extends JavaPlugin {
             
             registerListeners();
             registerCommands();
+            registerDynamicPermissions();
             
             getServer().getScheduler().runTaskTimer(this, () -> {
                 if (persistenceHandler != null) {
@@ -192,6 +193,22 @@ public class RelishTravel extends JavaPlugin {
     public void reload() {
         configManager.loadConfig();
         messageManager.loadMessages();
+        registerDynamicPermissions();
+    }
+    
+    private void registerDynamicPermissions() {
+        java.util.Map<String, Integer> boostLimits = configManager.getBoostPermissionLimits();
+        for (String permissionName : boostLimits.keySet()) {
+            if (getServer().getPluginManager().getPermission(permissionName) == null) {
+                org.bukkit.permissions.Permission perm = new org.bukkit.permissions.Permission(
+                    permissionName, 
+                    "Boost limit: " + boostLimits.get(permissionName), 
+                    org.bukkit.permissions.PermissionDefault.FALSE
+                );
+                getServer().getPluginManager().addPermission(perm);
+                debug("Registered dynamic permission: " + permissionName);
+            }
+        }
     }
     
     public ConfigManager getConfigManager() {

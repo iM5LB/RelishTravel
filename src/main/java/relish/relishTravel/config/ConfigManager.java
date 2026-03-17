@@ -93,12 +93,33 @@ public class ConfigManager {
     public java.util.Map<String, Integer> getBoostPermissionLimits() {
         java.util.Map<String, Integer> limits = new java.util.HashMap<>();
         org.bukkit.configuration.ConfigurationSection section = config.getConfigurationSection("launch.boost.permission-limits");
-        if (section != null) {
-            for (String permission : section.getKeys(false)) {
-                limits.put(permission, section.getInt(permission));
+        if (section == null) {
+            return limits;
+        }
+
+        // Bukkit treats dots in YAML keys as path separators, so a key like
+        // "relishtravel.boost.vip-plus" may be loaded as nested sections.
+        // Flatten the tree back into permission nodes.
+        flattenPermissionLimits(section, "", limits);
+        return limits;
+    }
+
+    private void flattenPermissionLimits(org.bukkit.configuration.ConfigurationSection section,
+                                         String prefix,
+                                         java.util.Map<String, Integer> out) {
+        for (String key : section.getKeys(false)) {
+            Object value = section.get(key);
+            String fullKey = prefix.isEmpty() ? key : prefix + "." + key;
+
+            if (value instanceof org.bukkit.configuration.ConfigurationSection nested) {
+                flattenPermissionLimits(nested, fullKey, out);
+                continue;
+            }
+
+            if (value instanceof Number number) {
+                out.put(fullKey, number.intValue());
             }
         }
-        return limits;
     }
     
     public boolean requireEmptyHandForBoost() {

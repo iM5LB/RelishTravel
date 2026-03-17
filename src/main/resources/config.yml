@@ -57,6 +57,7 @@ launch:
     # Use -1 for unlimited boosts
     permission-limits:
       "relishtravel.boost.vip": 5
+      "relishtravel.boost.vip-plus": 7
       "relishtravel.boost.premium": 10
       "relishtravel.boost.unlimited": -1
     

@@ -19,14 +19,17 @@ public class SpeedDisplayHandler {
     private final RelishTravel plugin;
     private final MessageManager messages;
     private final LaunchHandler launchHandler;
+    private final BoostHandler boostHandler;
     private final Set<UUID> displayingSpeed;
     private final Map<UUID, Integer> lastSpeedCache;
     private int taskId = -1;
     
-    public SpeedDisplayHandler(RelishTravel plugin, MessageManager messages, LaunchHandler launchHandler) {
+    public SpeedDisplayHandler(RelishTravel plugin, MessageManager messages, 
+                               LaunchHandler launchHandler, BoostHandler boostHandler) {
         this.plugin = plugin;
         this.messages = messages;
         this.launchHandler = launchHandler;
+        this.boostHandler = boostHandler;
         this.displayingSpeed = ConcurrentHashMap.newKeySet();
         this.lastSpeedCache = new ConcurrentHashMap<>();
         startSpeedDisplayTask();
@@ -76,15 +79,29 @@ public class SpeedDisplayHandler {
         // Build component directly without MiniMessage parsing for better performance
         Component message = Component.empty();
         
-        if (plugin.getConfigManager().isBoostDisplayEnabled() && launchHandler.hasActiveLaunch(player)) {
-            relish.relishTravel.model.LaunchData launchData = launchHandler.getActiveLaunchData(player);
-            if (launchData != null) {
-                int maxBoosts = plugin.getConfigManager().getMaxBoostsPerGlide();
-                int used = launchData.rightClickBoostCount();
-                
+        if (plugin.getConfigManager().isBoostDisplayEnabled()) {
+            int used = -1;
+            int maxBoosts = -1;
+            
+            if (launchHandler.hasActiveLaunch(player)) {
+                relish.relishTravel.model.LaunchData launchData = launchHandler.getActiveLaunchData(player);
+                if (launchData != null) {
+                    maxBoosts = boostHandler.getPlayerBoostLimit(player);
+                    used = launchData.rightClickBoostCount();
+                }
+            } else if (player.isGliding() && plugin.getConfigManager().isAllowBoostForNormalElytra()) {
+                maxBoosts = boostHandler.getPlayerBoostLimit(player);
+                used = boostHandler.getNormalElytraBoostCount(player);
+            }
+            
+            if (used != -1) {
                 if (maxBoosts > 0) {
                     int remaining = Math.max(0, maxBoosts - used);
                     message = message.append(Component.text("Boosts: " + remaining + "/" + maxBoosts, NamedTextColor.AQUA))
+                                   .append(Component.text(" | ", NamedTextColor.GRAY));
+                } else if (maxBoosts == -1) {
+                    // Unlimited boosts
+                    message = message.append(Component.text("Boosts: ∞", NamedTextColor.AQUA))
                                    .append(Component.text(" | ", NamedTextColor.GRAY));
                 } else {
                     message = message.append(Component.text("Boosts: " + used, NamedTextColor.AQUA))
