@@ -73,6 +73,10 @@ public class ConfigManager {
     public boolean isRightClickBoostEnabled() {
         return config.getBoolean("launch.boost.enabled", true);
     }
+
+    public boolean isBoostSoundEnabled() {
+        return config.getBoolean("launch.boost.sound-enabled", true);
+    }
     
     public String getBoostTrigger() {
         return config.getString("launch.boost.trigger", "RIGHT_CLICK");
@@ -155,7 +159,12 @@ public class ConfigManager {
     }
     
     public boolean isActionBarEnabled() {
-        return true;
+        String mode = getHudMode();
+        if (mode == null) {
+            return true;
+        }
+        String m = mode.trim().toUpperCase();
+        return m.equals("ACTION_BAR");
     }
     
     public boolean isSpeedDisplayEnabled() {
@@ -165,7 +174,32 @@ public class ConfigManager {
     public boolean isBoostDisplayEnabled() {
         return config.getBoolean("effects.boost-display", true);
     }
-    
+
+    public String getHudMode() {
+        return config.getString("effects.hud.mode", "ACTION_BAR");
+    }
+
+    private String getHudModeNormalized() {
+        String raw = getHudMode();
+        if (raw == null) {
+            return "ACTION_BAR";
+        }
+        String upper = raw.trim().toUpperCase();
+        // Backwards compatibility
+        if (upper.equals("BOTH") || upper.equals("ALL")) {
+            return "ACTION_BAR";
+        }
+        return upper;
+    }
+
+    public String getBossBarColor() {
+        return config.getString("effects.hud.bossbar.color", "BLUE");
+    }
+
+    public String getBossBarOverlay() {
+        return config.getString("effects.hud.bossbar.overlay", "PROGRESS");
+    }
+
     public int getSpeedUpdateTicks() {
         return config.getInt("effects.action-bar-update-ticks", 4);
     }
@@ -175,23 +209,52 @@ public class ConfigManager {
     }
     
     public boolean isSoundsEnabled() {
-        return config.getBoolean("effects.sounds", true);
+        // Deprecated: global sounds toggle removed. Keep method for compatibility; treat as "enabled".
+        return true;
+    }
+
+    public boolean isChargeSoundEnabled() {
+        return config.getBoolean("effects.charge-sound.enabled", true);
     }
     
     public String getSoundType() {
+        // Charging sound type (legacy: effects.sound-type)
+        if (config.contains("effects.charge-sound.type")) {
+            return config.getString("effects.charge-sound.type", "BLOCK_BEACON_ACTIVATE");
+        }
         return config.getString("effects.sound-type", "BLOCK_BEACON_ACTIVATE");
     }
     
     public float getSoundVolume() {
+        // Charging sound volume (legacy: effects.sound-volume)
+        if (config.contains("effects.charge-sound.volume")) {
+            return (float) config.getDouble("effects.charge-sound.volume", 0.5);
+        }
         return (float) config.getDouble("effects.sound-volume", 0.5);
     }
     
     public float getSoundPitchMin() {
+        // Charging sound pitch min (legacy: effects.sound-pitch-min)
+        if (config.contains("effects.charge-sound.pitch-min")) {
+            return (float) config.getDouble("effects.charge-sound.pitch-min", 0.5);
+        }
         return (float) config.getDouble("effects.sound-pitch-min", 0.5);
     }
     
     public float getSoundPitchMax() {
+        // Charging sound pitch max (legacy: effects.sound-pitch-max)
+        if (config.contains("effects.charge-sound.pitch-max")) {
+            return (float) config.getDouble("effects.charge-sound.pitch-max", 2.0);
+        }
         return (float) config.getDouble("effects.sound-pitch-max", 2.0);
+    }
+
+    public boolean isForwardBoostSoundEnabled() {
+        return config.getBoolean("launch.forward-boost-sound-enabled", true);
+    }
+
+    public boolean isAutoGlideEquipSoundEnabled() {
+        return config.getBoolean("launch.auto-glide-equip-sound-enabled", true);
     }
     
     public boolean isParticlesEnabled() {

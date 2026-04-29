@@ -117,7 +117,7 @@ public class LaunchHandler {
         activeLaunches.put(player.getUniqueId(), launchData);
         cooldowns.put(player.getUniqueId(), now + (config.getCooldownSeconds() * 1000L));
         
-        if (config.isSoundsEnabled()) {
+        if (config.isLaunchSoundEnabled()) {
             playLaunchSound(player);
         }
         if (plugin.getSpeedDisplayHandler() != null) {
@@ -140,7 +140,7 @@ public class LaunchHandler {
             player.setVelocity(velocity);
             activeLaunches.put(player.getUniqueId(), launchData.withForwardBoost());
             
-            if (config.isSoundsEnabled()) {
+            if (config.isForwardBoostSoundEnabled()) {
                 player.playSound(player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, 1.0f, 1.5f);
             }
         }
@@ -271,7 +271,7 @@ public class LaunchHandler {
                     if (yVelocity < -0.1 && heightGained > 5) {
                         player.setGliding(true);
                         
-                        if (config.isSoundsEnabled()) {
+                        if (config.isAutoGlideEquipSoundEnabled()) {
                             player.playSound(player.getLocation(), Sound.ITEM_ARMOR_EQUIP_ELYTRA, 1.0f, 1.0f);
                         }
                         

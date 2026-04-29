@@ -80,12 +80,21 @@ effects:
   speed-display: true
   boost-display: true
   action-bar-update-ticks: 4  # Lower = more frequent
-  
-  sounds: true
-  sound-type: "BLOCK_BEACON_ACTIVATE"
-  sound-volume: 0.5
-  sound-pitch-min: 0.5
-  sound-pitch-max: 2.0
+
+  # HUD mode for charge + glide displays
+  hud:
+    mode: "ACTION_BAR"  # ACTION_BAR, BOSSBAR, OFF
+    bossbar:
+      color: "BLUE"
+      overlay: "PROGRESS"
+
+  # Charging sound (only affects charge)
+  charge-sound:
+    enabled: true
+    type: "BLOCK_BEACON_ACTIVATE"
+    volume: 0.5
+    pitch-min: 0.5
+    pitch-max: 2.0
   
   particles: true
   particle-type: "ELECTRIC_SPARK"
@@ -96,6 +105,16 @@ effects:
   launch-sound-enabled: true
   launch-sound-volume: 1.0
   launch-sound-pitch: 1.5
+```
+
+## Sound Toggles (Per Feature)
+
+```yaml
+launch:
+  forward-boost-sound-enabled: true
+  auto-glide-equip-sound-enabled: true
+  boost:
+    sound-enabled: true
 ```
 
 ## Safety Settings

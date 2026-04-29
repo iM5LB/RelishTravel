@@ -2,7 +2,7 @@
 # A safe, controlled Elytra launch system for Minecraft 1.20+
 
 # Configuration version (DO NOT EDIT - Used for automatic config updates)
-config-version: 1
+config-version: 4
 
 # Language setting (en = English, ar = Arabic)
 # Language files are stored in plugins/RelishTravel/lang/
@@ -44,6 +44,11 @@ launch:
   
   # Speed boost when pressing forward during glide
   forward-boost-speed: 1.0
+  # Firework sound when forward-boost triggers (set false to disable only this sound)
+  forward-boost-sound-enabled: true
+
+  # Sound when auto-glide forces Elytra equip sound
+  auto-glide-equip-sound-enabled: true
   
   # Boost configuration
   boost:
@@ -51,6 +56,7 @@ launch:
     speed: 2.0
     cooldown-seconds: 5
     allow-for-normal-elytra: true  # Allow boost for normal elytra users (not just RelishTravel launches)
+    sound-enabled: true  # Sound when a boost is used (right-click / sneak boost)
     
     # Permission-based boost limits
     # Players will get the highest limit from all permissions they have
@@ -88,13 +94,29 @@ effects:
   speed-display: true  # Show speed during glide
   boost-display: true  # Show boost counter in action bar
   action-bar-update-ticks: 4  # Update action bar every X ticks (4 = 5x per second) - affects speed display and charge progress
-  
-  # Sound configuration
-  sounds: true
-  sound-type: "BLOCK_BEACON_ACTIVATE"
-  sound-volume: 0.5  # Volume (0.0 to 1.0)
-  sound-pitch-min: 0.5  # Minimum pitch during charge
-  sound-pitch-max: 2.0  # Maximum pitch when fully charged
+
+  # HUD display mode for speed/boost info
+  # Options: ACTION_BAR, BOSSBAR, OFF
+  # - ACTION_BAR: action bar only
+  # - BOSSBAR: boss bar only
+  # - OFF: disable HUD
+  hud:
+    mode: "ACTION_BAR"
+    bossbar:
+      # BossBar appearance (when mode is BOSSBAR)
+      # Colors: PINK, BLUE, RED, GREEN, YELLOW, PURPLE, WHITE
+      color: "BLUE"
+      # Overlays: PROGRESS, NOTCHED_6, NOTCHED_10, NOTCHED_12, NOTCHED_20
+      overlay: "PROGRESS"
+
+  # Charging sound configuration (sneak + jump charge)
+  # Only affects charging sounds.
+  charge-sound:
+    enabled: true
+    type: "BLOCK_BEACON_ACTIVATE"
+    volume: 0.5  # Volume (0.0 to 1.0)
+    pitch-min: 0.5  # Minimum pitch during charge
+    pitch-max: 2.0  # Maximum pitch when fully charged
   
   # Particle configuration
   particles: true

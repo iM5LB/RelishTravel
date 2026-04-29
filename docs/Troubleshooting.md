@@ -53,7 +53,15 @@ elytra:
 ```yaml
 effects:
   particles: true
-  sounds: true
+  charge-sound:
+    enabled: true
+  launch-sound-enabled: true
+
+launch:
+  forward-boost-sound-enabled: true
+  auto-glide-equip-sound-enabled: true
+  boost:
+    sound-enabled: true
 ```
 
 Check client settings too.

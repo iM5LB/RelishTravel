@@ -193,6 +193,12 @@ public class RelishTravel extends JavaPlugin {
     public void reload() {
         configManager.loadConfig();
         messageManager.loadMessages();
+        if (chargeManager != null) {
+            chargeManager.updateConfigCache();
+        }
+        if (speedDisplayHandler != null) {
+            speedDisplayHandler.onConfigReload();
+        }
         registerDynamicPermissions();
     }
     

@@ -2,6 +2,26 @@
 
 All notable changes to RelishTravel.
 
+## [1.0.4] - 2026-04-29
+
+### Changed
+
+**HUD:**
+- Added more HUD modes `ACTION_BAR`, `BOSSBAR`, or `OFF`.
+
+**Sounds:**
+- Sounds are now configured per feature:
+  - Charging: `effects.charge-sound.enabled`
+  - Launch: `effects.launch-sound-enabled`
+  - Forward boost firework: `launch.forward-boost-sound-enabled`
+  - Auto-glide equip sound: `launch.auto-glide-equip-sound-enabled`
+  - Boost use: `launch.boost.sound-enabled`
+
+### Fixed
+
+**Config Updates:**
+- Improved config merge/migrations for nested keys and new sections.
+
 ## [1.0.3] - 2026-03-17
 
 ### Fixed

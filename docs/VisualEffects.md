@@ -19,14 +19,29 @@ Electric sparks that grow as you charge.
 
 ```yaml
 effects:
-  sounds: true
-  sound-type: "BLOCK_BEACON_ACTIVATE"
-  sound-volume: 0.5
-  sound-pitch-min: 0.5
-  sound-pitch-max: 2.0
+  # Charging sound only
+  charge-sound:
+    enabled: true
+    type: "BLOCK_BEACON_ACTIVATE"
+    volume: 0.5
+    pitch-min: 0.5
+    pitch-max: 2.0
+
+  # Launch sound (RelishTravel launch trigger)
+  launch-sound-enabled: true
 ```
 
 Dynamic pitch that increases with charge level.
+
+Additional sound toggles live under `launch.*`:
+
+```yaml
+launch:
+  forward-boost-sound-enabled: true
+  auto-glide-equip-sound-enabled: true
+  boost:
+    sound-enabled: true
+```
 
 ## Action Bar Displays
 

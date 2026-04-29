@@ -168,7 +168,12 @@ public class BoostHandler {
         velocity = capVelocity(velocity);
         player.setVelocity(velocity);
         
-        if (config.isSoundsEnabled()) {
+        boolean soundEnabled = config.isBoostSoundEnabled();
+        if (config.isDebugMode()) {
+            plugin.getLogger().info("[DEBUG] [" + player.getName() + "] Boost sound enabled: " + soundEnabled);
+        }
+
+        if (soundEnabled) {
             player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_FLAP, 1.0f, 1.8f);
         }
     }
