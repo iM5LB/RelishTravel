@@ -1,0 +1,79 @@
+# ================================================================================
+# RelishTravel - English Messages
+# ================================================================================
+# Modern MiniMessage format with hex colors and organized sections
+# Color Palette: Cyan/Blue (#00d9ff, #00bfff, #00a8e8, #0096d6, #0084c4)
+
+prefix: "<gradient:#00d9ff:#00bfff>⚡ RelishTravel</gradient> <dark_gray>|</dark_gray> "
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# GENERAL MESSAGES
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+messages:
+  # Charge related messages
+  charge:
+    progress: "<gradient:#00d9ff:#00bfff>⚡ Charging: <charge>%</gradient> <bar>"
+    cancelled-moved: "<red>✖ <gray>Charge cancelled - you moved!"
+    cancelled-damaged: "<red>✖ <gray>Charge cancelled - you took damage!"
+    cancelled-inventory: "<red>✖ <gray>Charge cancelled - inventory opened!"
+    cancelled-chest-slot: "<red>✖ <gray>Charge cancelled - chest slot changed!"
+    
+  # Launch related messages
+  launch:
+    failed: "<red>✖ <gray>Launch failed - something went wrong"
+    cooldown: "<#00d9ff>⌛ <gray>Please wait <white><time></white> before launching again"
+    obstruction: "<red>✖ <gray>Cannot launch - blocked above! Need <white><height></white> blocks of clear space"
+    chunk-not-loaded: "<red>✖ <gray>Cannot launch - area ahead not loaded!"
+    
+  # Safety check messages
+  safety:
+    in-water: "<red>✖ <gray>Cannot launch while in water!"
+    in-lava: "<red>✖ <gray>Cannot launch while in lava!"
+    has-levitation: "<red>✖ <gray>Cannot launch with levitation effect!"
+    chest-slot-blocked: "<red>✖ <gray>Chest slot must be empty or contain only an Elytra!"
+    already-flying: "<red>✖ <gray>Cannot launch while already flying or gliding!"
+    
+  # Elytra related messages
+  elytra:
+    equip-failed: "<red>✖ <gray>Failed to equip Elytra!"
+    cannot-remove-during-flight: "<red>✖ <gray>Cannot remove Elytra during flight!"
+    cannot-drop-during-flight: "<red>✖ <gray>Cannot drop Elytra during flight!"
+    cannot-swap-during-flight: "<red>✖ <gray>Cannot swap armor during flight!"
+    
+  # Boost messages
+  boost:
+    cooldown: "<#00d9ff>⌛ <gray>Boost on cooldown! Wait <white><time></white>"
+    max-uses: "<red>✖ <gray>No boosts remaining for this glide!"
+    
+  # Command messages
+  command:
+    reload-success: "<green>✔ <gray>RelishTravel configuration reloaded!"
+    reload-failed: "<red>✖ <gray>Failed to reload configuration!"
+    no-permission: "<red>✖ <gray>You don't have permission to use this command"
+    cleanup-success: "<green>✔ <gray>Forced cleanup complete! Temp Elytra removed if present"
+    
+    # Launch command messages
+    launch:
+      no-permission: "<red>✖ <gray>You don't have permission to use this command"
+      invalid-percent: "<red>✖ <gray>Percent must be between 0 and 100!"
+      invalid-format: "<red>✖ <gray>Invalid percent! Usage: <white>/rtl <0-100></white>"
+      success: "<green>✔ <gray>Launch at <#00d9ff><percent>%</#00d9ff> power!"
+      failed: "<red>✖ <gray>Launch failed!"
+      plugin-disabled: "<red>✖ <gray>Plugin disabled!"
+      no-use-permission: "<red>✖ <gray>No permission!"
+      world-disabled: "<red>✖ <gray>Disabled in this world!"
+      cannot-use-elytra: "<red>✖ <gray>Cannot use Elytra!"
+    
+    # Help/Usage messages
+    help:
+      header: "<#00d9ff><strikethrough>━━━━━━</strikethrough> <bold>RelishTravel</bold> <#00d9ff><strikethrough>━━━━━━</strikethrough>"
+      reload: "<#00bfff>/rt reload <gray>- Reload configuration"
+      launch: "<#00bfff>/rt launch [percent] <gray>- Fast launch"
+      cleanup: "<#00bfff>/rt cleanup <gray>- Force cleanup"
+      rtl: "<#00bfff>/rtl [percent] <gray>- Quick launch"
+      footer: "<#00d9ff><strikethrough>━━━━━━━━━━━━━━━━━━━━━━━━</strikethrough>"
+    
+  # World restriction message
+  world:
+    disabled: "<red>✖ <gray>RelishTravel is disabled in this world!"

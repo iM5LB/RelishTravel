@@ -1,0 +1,51 @@
+name: RelishTravel
+version: '${project.version}'
+main: relish.relishTravel.RelishTravel
+api-version: '1.20'
+author: RelishDev
+description: Safe, controlled Elytra launch system with automatic gliding
+website: https://modrinth.com/plugin/relishtravel
+
+commands:
+  relishtravel:
+    description: Main RelishTravel command
+    usage: /<command> [reload|launch <percent>]
+    aliases: [rt, rtravel]
+    permission: relishtravel.use
+  
+  rtl:
+    description: Quick launch command (alias for /rt launch)
+    usage: /<command> [percent]
+    permission: relishtravel.fastlaunch
+
+permissions:
+  relishtravel.use:
+    description: Allows usage of RelishTravel launch system
+    default: true
+  relishtravel.admin:
+    description: Receive update notifications and admin features
+    default: op
+  relishtravel.reload:
+    description: Allows reloading the plugin configuration
+    default: op
+  relishtravel.bypass.cooldown:
+    description: Bypass launch cooldowns
+    default: op
+  relishtravel.bypass.boost-cooldown:
+    description: Bypass boost cooldowns
+    default: op
+  relishtravel.bypass.disabled-worlds:
+    description: Use RelishTravel in disabled worlds
+    default: op
+  relishtravel.fastlaunch:
+    description: Use fast launch command to launch instantly
+    default: op
+  relishtravel.boost.vip:
+    description: Allows 5 boosts per glide
+    default: false
+  relishtravel.boost.premium:
+    description: Allows 10 boosts per glide
+    default: false
+  relishtravel.boost.unlimited:
+    description: Allows unlimited boosts per glide
+    default: op

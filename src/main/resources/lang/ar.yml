@@ -1,0 +1,79 @@
+# ================================================================================
+# RelishTravel - Arabic Messages
+# ================================================================================
+# Modern MiniMessage format with hex colors and organized sections
+# Color Palette: Cyan/Blue (#00d9ff, #00bfff, #00a8e8, #0096d6, #0084c4)
+
+prefix: "<gradient:#00d9ff:#00bfff>⚡ RelishTravel</gradient> <dark_gray>|</dark_gray> "
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# GENERAL MESSAGES
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+messages:
+  # رسائل الشحن
+  charge:
+    progress: "<gradient:#00d9ff:#00bfff>⚡ الشحن: <charge>%</gradient> <bar>"
+    cancelled-moved: "<red>✖ <gray>تم إلغاء الشحن - لقد تحركت!"
+    cancelled-damaged: "<red>✖ <gray>تم إلغاء الشحن - تعرضت للضرر!"
+    cancelled-inventory: "<red>✖ <gray>تم إلغاء الشحن - فتحت الحقيبة!"
+    cancelled-chest-slot: "<red>✖ <gray>تم إلغاء الشحن - تغير محتوى فتحة الصدر!"
+    
+  # رسائل الإطلاق
+  launch:
+    failed: "<red>✖ <gray>فشل الإطلاق - حدث خطأ ما"
+    cooldown: "<#00d9ff>⌛ <gray>يرجى الانتظار <white><time></white> قبل الإطلاق مرة أخرى"
+    obstruction: "<red>✖ <gray>لا يمكن الإطلاق - محظور فوقك! تحتاج إلى <white><height></white> كتلة من المساحة الفارغة"
+    chunk-not-loaded: "<red>✖ <gray>لا يمكن الإطلاق - المنطقة أمامك غير محملة!"
+    
+  # رسائل فحص السلامة
+  safety:
+    in-water: "<red>✖ <gray>لا يمكن الإطلاق أثناء وجودك في الماء!"
+    in-lava: "<red>✖ <gray>لا يمكن الإطلاق أثناء وجودك في الحمم!"
+    has-levitation: "<red>✖ <gray>لا يمكن الإطلاق مع تأثير الارتفاع!"
+    chest-slot-blocked: "<red>✖ <gray>يجب أن تكون فتحة الصدر فارغة أو تحتوي على Elytra فقط!"
+    already-flying: "<red>✖ <gray>لا يمكن الإطلاق أثناء الطيران أو الانزلاق بالفعل!"
+    
+  # رسائل Elytra
+  elytra:
+    equip-failed: "<red>✖ <gray>فشل في تجهيز Elytra!"
+    cannot-remove-during-flight: "<red>✖ <gray>لا يمكن إزالة Elytra أثناء الطيران!"
+    cannot-drop-during-flight: "<red>✖ <gray>لا يمكن إسقاط Elytra أثناء الطيران!"
+    cannot-swap-during-flight: "<red>✖ <gray>لا يمكن تبديل الدروع أثناء الطيران!"
+    
+  # رسائل التعزيز
+  boost:
+    cooldown: "<#00d9ff>⌛ <gray>التعزيز قيد الانتظار! انتظر <white><time></white>"
+    max-uses: "<red>✖ <gray>لا توجد تعزيزات متبقية لهذا الانزلاق!"
+    
+  # رسائل الأوامر
+  command:
+    reload-success: "<green>✔ <gray>تم إعادة تحميل إعدادات RelishTravel!"
+    reload-failed: "<red>✖ <gray>فشل في إعادة تحميل الإعدادات!"
+    no-permission: "<red>✖ <gray>ليس لديك إذن لاستخدام هذا الأمر"
+    cleanup-success: "<green>✔ <gray>تم التنظيف الإجباري! تمت إزالة Elytra المؤقت إن وجد"
+    
+    # رسائل أمر الإطلاق
+    launch:
+      no-permission: "<red>✖ <gray>ليس لديك إذن لاستخدام هذا الأمر"
+      invalid-percent: "<red>✖ <gray>يجب أن تكون النسبة بين 0 و 100!"
+      invalid-format: "<red>✖ <gray>نسبة غير صالحة! الاستخدام: <white>/rtl <0-100></white>"
+      success: "<green>✔ <gray>الإطلاق بقوة <#00d9ff><percent>%</#00d9ff>!"
+      failed: "<red>✖ <gray>فشل الإطلاق!"
+      plugin-disabled: "<red>✖ <gray>الإضافة معطلة!"
+      no-use-permission: "<red>✖ <gray>لا يوجد إذن!"
+      world-disabled: "<red>✖ <gray>معطل في هذا العالم!"
+      cannot-use-elytra: "<red>✖ <gray>لا يمكن استخدام Elytra!"
+    
+    # رسائل المساعدة/الاستخدام
+    help:
+      header: "<#00d9ff><strikethrough>━━━━━━</strikethrough> <bold>RelishTravel</bold> <#00d9ff><strikethrough>━━━━━━</strikethrough>"
+      reload: "<#00bfff>/rt reload <gray>- إعادة تحميل الإعدادات"
+      launch: "<#00bfff>/rt launch [percent] <gray>- إطلاق سريع"
+      cleanup: "<#00bfff>/rt cleanup <gray>- تنظيف إجباري"
+      rtl: "<#00bfff>/rtl [percent] <gray>- إطلاق سريع"
+      footer: "<#00d9ff><strikethrough>━━━━━━━━━━━━━━━━━━━━━━━━</strikethrough>"
+    
+  # رسالة تقييد العالم
+  world:
+    disabled: "<red>✖ <gray>RelishTravel معطل في هذا العالم!"
