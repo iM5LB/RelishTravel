@@ -11,6 +11,8 @@ import relish.relishTravel.config.ConfigManager;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,36 +35,19 @@ public class MessageManager {
     public void loadMessages() {
         messageCache.clear();
         String language = configManager.getLanguage();
-        
-        File langFolder = new File(plugin.getDataFolder(), "lang");
-        if (!langFolder.exists()) {
-            langFolder.mkdirs();
+
+        // Ensure language file exists and merge new keys from jar defaults (without overwriting custom values).
+        LangUpdater updater = new LangUpdater(plugin);
+        File langFile = updater.ensureAndUpdate(language);
+
+        // Load UTF-8 so Arabic and special characters are stable.
+        try (InputStreamReader reader = new InputStreamReader(Files.newInputStream(langFile.toPath()), StandardCharsets.UTF_8)) {
+            this.messages = YamlConfiguration.loadConfiguration(reader);
+        } catch (IOException e) {
+            plugin.getLogger().warning("Failed to load language file as UTF-8 (" + langFile.getName() + "): " + e.getMessage());
+            this.messages = YamlConfiguration.loadConfiguration(langFile);
         }
-        
-        File langFile = new File(langFolder, language + ".yml");
-        
-        if (!langFile.exists()) {
-            try (InputStream in = plugin.getResource("lang/" + language + ".yml")) {
-                if (in != null) {
-                    Files.copy(in, langFile.toPath());
-                } else {
-                    plugin.getLogger().warning("Language file not found: " + language + ".yml, falling back to en.yml");
-                    langFile = new File(langFolder, "en.yml");
-                    if (!langFile.exists()) {
-                        try (InputStream enStream = plugin.getResource("lang/en.yml")) {
-                            if (enStream != null) {
-                                Files.copy(enStream, langFile.toPath());
-                            }
-                        }
-                    }
-                }
-            } catch (IOException e) {
-                plugin.getLogger().severe("Failed to copy language file: " + e.getMessage());
-            }
-        }
-        
-        this.messages = YamlConfiguration.loadConfiguration(langFile);
-        plugin.getLogger().info("Loaded language: " + language);
+        plugin.getLogger().info("Loaded language: " + language + " (" + langFile.getName() + ")");
     }
     
     public String getMessage(String path) {
