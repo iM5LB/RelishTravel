@@ -1,6 +1,7 @@
 package relish.relishTravel.message;
 
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import relish.relishTravel.RelishTravel;
@@ -55,7 +56,22 @@ public class LangUpdater {
 
         // Merge new keys from jar defaults into the server file.
         try {
-            FileConfiguration serverCfg = loadUtf8(langFile);
+            FileConfiguration serverCfg;
+            try {
+                serverCfg = loadUtf8(langFile);
+            } catch (InvalidConfigurationException badYaml) {
+                // The server file contains illegal YAML characters (control bytes etc.).
+                // Back it up and restore a clean copy from the jar so the plugin can start.
+                plugin.getLogger().warning("Invalid language YAML detected (" + langFile.getName() + "): " + badYaml.getMessage());
+                backup(langFile);
+                if (!copyFromJar(lang, langFile) && !langFile.getName().equalsIgnoreCase("en.yml")) {
+                    copyFromJar("en", langFile);
+                }
+                serverCfg = loadUtf8(langFile);
+            }
+
+            // Small message migrations: only rewrite if the server file still has our old default strings.
+            migrateLegacyToggleStrings(serverCfg);
 
             String jarLang = langFile.getName().equalsIgnoreCase("en.yml") ? "en" : lang;
             InputStream in = plugin.getResource("lang/" + jarLang + ".yml");
@@ -68,7 +84,7 @@ public class LangUpdater {
                 return langFile;
             }
 
-            FileConfiguration defaultCfg = YamlConfiguration.loadConfiguration(new InputStreamReader(in, StandardCharsets.UTF_8));
+            FileConfiguration defaultCfg = loadResourceYamlSanitized(in);
 
             int added = mergeMissingLeaves(defaultCfg, serverCfg);
             if (added > 0) {
@@ -76,7 +92,8 @@ public class LangUpdater {
                 serverCfg.save(langFile);
                 plugin.getLogger().info("Language file updated with " + added + " new key(s): " + langFile.getName());
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
+            // Never fail plugin enable due to a language file problem.
             plugin.getLogger().warning("Failed to update language file: " + langFile.getName() + " (" + e.getMessage() + ")");
             if (plugin.isDebugMode()) {
                 e.printStackTrace();
@@ -84,6 +101,33 @@ public class LangUpdater {
         }
 
         return langFile;
+    }
+
+    private void migrateLegacyToggleStrings(FileConfiguration serverCfg) {
+        // Previous default strings used "OK/OFF". Replace them with the standard icons used elsewhere,
+        // but only if the value matches the old defaults to avoid overwriting custom translations.
+        String enabledKey = "messages.command.toggle.enabled";
+        String disabledKey = "messages.command.toggle.disabled";
+
+        String enabled = serverCfg.getString(enabledKey, "");
+        if ("<green>OK <gray>Charging enabled.".equals(enabled)) {
+            serverCfg.set(enabledKey, "<green>âœ” <gray>Charging enabled.");
+        }
+
+        String disabled = serverCfg.getString(disabledKey, "");
+        if ("<yellow>OFF <gray>Charging disabled.".equals(disabled)) {
+            serverCfg.set(disabledKey, "<red>âœ– <gray>Charging disabled.");
+        }
+    }
+
+    private FileConfiguration loadResourceYamlSanitized(InputStream in) throws IOException, InvalidConfigurationException {
+        byte[] bytes = in.readAllBytes();
+        String raw = new String(bytes, StandardCharsets.UTF_8);
+        String sanitized = sanitizeYaml(raw);
+
+        YamlConfiguration cfg = new YamlConfiguration();
+        cfg.loadFromString(sanitized);
+        return cfg;
     }
 
     private boolean copyFromJar(String language, File outFile) {
@@ -99,18 +143,47 @@ public class LangUpdater {
         }
     }
 
-    private FileConfiguration loadUtf8(File file) throws IOException {
-        try (FileInputStream fis = new FileInputStream(file);
-             InputStreamReader reader = new InputStreamReader(fis, StandardCharsets.UTF_8)) {
-            return YamlConfiguration.loadConfiguration(reader);
+    private FileConfiguration loadUtf8(File file) throws IOException, InvalidConfigurationException {
+        // Bukkit's loadConfiguration(Reader) may throw InvalidConfigurationException on illegal code points.
+        // Read the whole file, sanitize illegal control chars, then load from string.
+        byte[] bytes = Files.readAllBytes(file.toPath());
+        String raw = new String(bytes, StandardCharsets.UTF_8);
+        String sanitized = sanitizeYaml(raw);
+
+        YamlConfiguration cfg = new YamlConfiguration();
+        cfg.loadFromString(sanitized);
+        return cfg;
+    }
+
+    private String sanitizeYaml(String in) {
+        // Strip C0/C1 control chars that SnakeYAML rejects (except common whitespace).
+        // Keep: \r \n \t
+        StringBuilder sb = new StringBuilder(in.length());
+        for (int i = 0; i < in.length(); i++) {
+            char c = in.charAt(i);
+            if (c == '\r' || c == '\n' || c == '\t') {
+                sb.append(c);
+                continue;
+            }
+            if (c < 0x20) {
+                continue;
+            }
+            if (c >= 0x7F && c <= 0x9F) {
+                continue;
+            }
+            sb.append(c);
         }
+        return sb.toString();
     }
 
     private int mergeMissingLeaves(FileConfiguration sourceRoot, FileConfiguration targetRoot) {
         // Use a leaf-key merge to avoid Bukkit edge-cases with section detection.
         int added = 0;
 
-        for (var entry : sourceRoot.getValues(true).entrySet()) {
+        java.util.Map<String, Object> source = sourceRoot.getValues(true);
+        java.util.Map<String, Object> target = targetRoot.getValues(true);
+
+        for (var entry : source.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
 
@@ -119,7 +192,8 @@ public class LangUpdater {
             }
 
             // If the key is missing, add it. We intentionally do NOT overwrite custom server values.
-            if (!targetRoot.isSet(key)) {
+            boolean exists = target.containsKey(key);
+            if (!exists) {
                 targetRoot.set(key, value);
                 added++;
             }

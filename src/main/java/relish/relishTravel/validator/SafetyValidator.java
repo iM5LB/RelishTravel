@@ -16,9 +16,25 @@ public class SafetyValidator {
     }
     
     public boolean canStartCharge(Player player, MessageManager messages) {
-        if (player.isFlying()) {
-            messages.sendMessage(player, "safety.already-flying");
-            return false;
+        return canStartCharge(player, messages, false);
+    }
+
+    /**
+     * @param skipGroundCheck if true, skip flying/gliding/on-ground checks entirely.
+     *                        Used for JUMP_SNEAK where the player sneaks right after jumping
+     *                        (can be mid-air or after landing).
+     */
+    public boolean canStartCharge(Player player, MessageManager messages, boolean skipGroundCheck) {
+        if (!skipGroundCheck) {
+            if (player.isFlying() || player.isGliding()) {
+                // Silent: player is mid-air naturally (e.g. sneaking while gliding to boost).
+                return false;
+            }
+
+            if (!player.isOnGround()) {
+                // Silent: player is airborne but not flying/gliding.
+                return false;
+            }
         }
         
         if (player.isInWater()) {
@@ -49,7 +65,40 @@ public class SafetyValidator {
     }
     
     public boolean canLaunch(Player player, MessageManager messages) {
-        return canStartCharge(player, messages);
+        if (player.isFlying() || player.isGliding()) {
+            messages.sendMessage(player, "safety.already-flying");
+            return false;
+        }
+
+        if (!player.isOnGround()) {
+            messages.sendMessage(player, "safety.in-air");
+            return false;
+        }
+        if (player.isInWater()) {
+            messages.sendMessage(player, "safety.in-water");
+            return false;
+        }
+        
+        if (player.isInLava()) {
+            messages.sendMessage(player, "safety.in-lava");
+            return false;
+        }
+        
+        if (player.hasPotionEffect(org.bukkit.potion.PotionEffectType.LEVITATION)) {
+            messages.sendMessage(player, "safety.has-levitation");
+            return false;
+        }
+        
+        if (!isChestSlotValid(player)) {
+            messages.sendMessage(player, "safety.chest-slot-blocked");
+            return false;
+        }
+        
+        if (!hasSufficientVerticalSpace(player, messages)) {
+            return false;
+        }
+        
+        return true;
     }
     
     private boolean isChestSlotValid(Player player) {

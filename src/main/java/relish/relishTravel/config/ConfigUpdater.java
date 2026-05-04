@@ -18,7 +18,7 @@ public class ConfigUpdater {
     
     private final RelishTravel plugin;
     private final File configFile;
-    private static final int CURRENT_CONFIG_VERSION = 4;
+    private static final int CURRENT_CONFIG_VERSION = 5;
     
     public ConfigUpdater(RelishTravel plugin) {
         this.plugin = plugin;
@@ -68,6 +68,9 @@ public class ConfigUpdater {
         }
         if (fromVersion < 4) {
             migrateToV4(config);
+        }
+        if (fromVersion < 5) {
+            migrateToV5(config);
         }
     }
 
@@ -157,6 +160,47 @@ public class ConfigUpdater {
             plugin.getLogger().info("Config migration v4: removed " + moved + " legacy key(s)");
         } else {
             plugin.getLogger().info("Config migration v4: no changes needed");
+        }
+    }
+
+    private void migrateToV5(FileConfiguration config) {
+        // Collapse charge.trigger.first/second back into a single charge.trigger string.
+        // Also handles the old legacy string format (SNEAK_JUMP, SNEAK, JUMP).
+        String trigger = "SNEAK_JUMP"; // default
+
+        if (config.contains("charge.trigger.first")) {
+            String first = config.getString("charge.trigger.first", "SNEAK").trim().toUpperCase();
+            String second = config.getString("charge.trigger.second", "JUMP").trim().toUpperCase();
+
+            if (first.equals("SNEAK") && second.equals("NONE")) {
+                trigger = "SNEAK";
+            } else if (first.equals("SNEAK") && second.equals("JUMP")) {
+                trigger = "SNEAK_JUMP";
+            } else if (first.equals("JUMP") && second.equals("SNEAK")) {
+                trigger = "JUMP_SNEAK";
+            } else {
+                trigger = "SNEAK_JUMP"; // unsupported combo → safe default
+            }
+
+            config.set("charge.trigger.first", null);
+            config.set("charge.trigger.second", null);
+            config.set("charge.trigger", trigger);
+            plugin.getLogger().info("Config migration v5: collapsed charge.trigger.first/second -> charge.trigger=" + trigger);
+
+        } else if (config.isString("charge.trigger")) {
+            // Already a string — normalise to the new valid set.
+            String raw = config.getString("charge.trigger", "SNEAK_JUMP");
+            if (raw != null) {
+                String upper = raw.trim().toUpperCase();
+                if (upper.equals("SNEAK") || upper.equals("SNEAK_JUMP") || upper.equals("JUMP_SNEAK")) {
+                    trigger = upper;
+                } else if (upper.equals("JUMP")) {
+                    // Old JUMP-only → closest valid option is SNEAK_JUMP
+                    trigger = "SNEAK_JUMP";
+                }
+            }
+            config.set("charge.trigger", trigger);
+            plugin.getLogger().info("Config migration v5: normalised charge.trigger=" + trigger);
         }
     }
 

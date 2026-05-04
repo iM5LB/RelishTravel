@@ -37,8 +37,15 @@ public class MessageManager {
         String language = configManager.getLanguage();
 
         // Ensure language file exists and merge new keys from jar defaults (without overwriting custom values).
-        LangUpdater updater = new LangUpdater(plugin);
-        File langFile = updater.ensureAndUpdate(language);
+        File langFile;
+        try {
+            LangUpdater updater = new LangUpdater(plugin);
+            langFile = updater.ensureAndUpdate(language);
+        } catch (Throwable t) {
+            // Never fail plugin enable due to language update errors.
+            plugin.getLogger().warning("Language updater failed, falling back to en.yml: " + t.getMessage());
+            langFile = new File(new File(plugin.getDataFolder(), "lang"), "en.yml");
+        }
 
         // Load UTF-8 so Arabic and special characters are stable.
         try (InputStreamReader reader = new InputStreamReader(Files.newInputStream(langFile.toPath()), StandardCharsets.UTF_8)) {
