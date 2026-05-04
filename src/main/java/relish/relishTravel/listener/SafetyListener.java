@@ -45,6 +45,14 @@ public class SafetyListener implements Listener {
         if (!chargeManager.isCharging(player)) {
             return;
         }
+
+        // If a charge is somehow active while gliding/flying, cancel it with the correct feedback
+        // instead of reporting it as a movement cancel.
+        if (player.isGliding() || player.isFlying()) {
+            chargeManager.cancelCharge(player);
+            plugin.getMessageManager().sendMessage(player, "safety.already-flying");
+            return;
+        }
         
         if (!plugin.getConfigManager().isCancelOnMove()) {
             return;

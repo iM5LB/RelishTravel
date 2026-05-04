@@ -166,6 +166,16 @@ public class ChargeListener implements Listener {
             }
             return false;
         }
+
+        // Charging is meant to be started from the ground. If the player is already gliding/flying,
+        // don't start charging (prevents "moved" cancellations while in the air).
+        if (player.isGliding() || player.isFlying() || !player.isOnGround()) {
+            messages.sendMessage(player, "safety.already-flying");
+            if (config.isDebugMode()) {
+                plugin.getLogger().info("[DEBUG] [" + player.getName() + "] Cannot start charge while airborne/gliding");
+            }
+            return false;
+        }
         
         if (!config.isEnabled()) {
             if (config.isDebugMode()) {
