@@ -28,23 +28,14 @@ public class ChargeListener implements Listener {
     private final Map<UUID, PendingTrigger> pendingTriggers;
     
     private enum JumpState {
-        SNEAKING,
         JUMPED_SAFE,
         JUMPED_UNSAFE
     }
 
-    private enum TriggerAction {
-        SNEAK,
-        JUMP,
-        NONE
-    }
-
     private static class PendingTrigger {
-        TriggerAction firstAction;
         long firstTimeMs;
 
-        PendingTrigger(TriggerAction firstAction, long firstTimeMs) {
-            this.firstAction = firstAction;
+        PendingTrigger(long firstTimeMs) {
             this.firstTimeMs = firstTimeMs;
         }
     }
@@ -103,7 +94,34 @@ public class ChargeListener implements Listener {
             return;
         }
 
-        handleStartTriggerAction(player, TriggerAction.SNEAK);
+        // Sneak pressed — handle based on trigger mode.
+        String trigger = config.getChargeTrigger();
+
+        if (trigger.equals("SNEAK")) {
+            // Sneak alone starts charging.
+            if (canStartChargeWithFeedback(player)) {
+                startChargeNow(player);
+            }
+
+        } else if (trigger.equals("SNEAK_JUMP")) {
+            // Sneak is the first step — just record it, jump will complete the sequence.
+            // Nothing to do here; onPlayerMove handles the jump detection while sneaking.
+
+        } else if (trigger.equals("JUMP_SNEAK")) {
+            // Sneak is the second step — check if a pending jump was registered.
+            PendingTrigger pending = pendingTriggers.get(playerId);
+            long windowMs = 2000L;
+            if (pending != null && System.currentTimeMillis() - pending.firstTimeMs <= windowMs) {
+                pendingTriggers.remove(playerId);
+                sneakingPlayers.remove(playerId); // clear jump state so next cycle works
+                if (canStartChargeWithFeedback(player, true)) {
+                    startChargeNow(player);
+                }
+            } else {
+                pendingTriggers.remove(playerId);
+                sneakingPlayers.remove(playerId);
+            }
+        }
     }
     
     @EventHandler(priority = EventPriority.MONITOR)
@@ -115,41 +133,43 @@ public class ChargeListener implements Listener {
             return;
         }
 
-        // Detect a jump (best-effort; Bukkit doesn't expose a dedicated jump event).
-        if (!player.isSneaking() && getFirstAction() == TriggerAction.SNEAK) {
-            // If the first action is sneak, we only care about jump while sneaking (unless second is NONE).
-            // This keeps accidental jumps from triggering charge when not sneaking.
+        String trigger = config.getChargeTrigger();
+        // Jump detection is only needed for SNEAK_JUMP and JUMP_SNEAK.
+        if (trigger.equals("SNEAK")) {
             return;
         }
-        
+
+        // For SNEAK_JUMP: only detect jumps while the player is already sneaking.
+        if (trigger.equals("SNEAK_JUMP") && !player.isSneaking()) {
+            return;
+        }
+
         JumpState state = sneakingPlayers.get(playerId);
-        
+
         if (chargeManager.isCharging(player)) {
             return;
         }
-        
+
         if (event.getTo() != null && event.getFrom() != null) {
             if (state == null && player.getVelocity().getY() > 0.08) {
                 long now = System.currentTimeMillis();
                 Long lastJump = lastJumpTime.get(playerId);
-                
+
                 if (lastJump != null && now - lastJump < 500) {
                     return;
                 }
-                
+
                 if (!player.isOnGround() && event.getFrom().getY() < event.getTo().getY() - 0.5) {
                     return;
                 }
-                
+
                 sneakingPlayers.put(playerId, JumpState.JUMPED_SAFE);
                 lastJumpTime.put(playerId, now);
-
-                // Jump action for the trigger system.
-                handleStartTriggerAction(player, TriggerAction.JUMP);
+                handleJumpDetected(player, trigger);
                 return;
             }
-            
-            // Legacy SNEAK_JUMP behavior: start charging on landing after a sneak+jump.
+
+            // Legacy SNEAK_JUMP behavior.
             if (isLegacySneakJump() && state == JumpState.JUMPED_SAFE && player.isOnGround() && player.isSneaking()) {
                 if (canStartChargeWithFeedback(player)) {
                     startChargeNow(player);
@@ -158,8 +178,32 @@ public class ChargeListener implements Listener {
             }
         }
     }
+
+    /**
+     * Called when a jump is detected. Decides whether to start charging based on trigger mode.
+     */
+    private void handleJumpDetected(Player player, String trigger) {
+        if (trigger.equals("SNEAK_JUMP")) {
+            // Second step: player was already sneaking, jump completes the sequence → start charge.
+            if (canStartChargeWithFeedback(player)) {
+                startChargeNow(player);
+            }
+        } else if (trigger.equals("JUMP_SNEAK")) {
+            // First step: jump registers a pending trigger, sneak will complete it.
+            UUID id = player.getUniqueId();
+            long now = System.currentTimeMillis();
+            pendingTriggers.put(id, new PendingTrigger(now));
+            if (config.isDebugMode()) {
+                plugin.getLogger().info("[DEBUG] [" + player.getName() + "] JUMP_SNEAK: jump detected, waiting for sneak");
+            }
+        }
+    }
     
     private boolean canStartChargeWithFeedback(Player player) {
+        return canStartChargeWithFeedback(player, false);
+    }
+
+    private boolean canStartChargeWithFeedback(Player player, boolean skipGroundCheck) {
         if (chargeManager.isCharging(player)) {
             if (config.isDebugMode()) {
                 plugin.getLogger().info("[DEBUG] [" + player.getName() + "] Already charging - skipping");
@@ -167,16 +211,6 @@ public class ChargeListener implements Listener {
             return false;
         }
 
-        // Charging is meant to be started from the ground. If the player is already gliding/flying,
-        // don't start charging (prevents "moved" cancellations while in the air).
-        if (player.isGliding() || player.isFlying() || !player.isOnGround()) {
-            messages.sendMessage(player, "safety.already-flying");
-            if (config.isDebugMode()) {
-                plugin.getLogger().info("[DEBUG] [" + player.getName() + "] Cannot start charge while airborne/gliding");
-            }
-            return false;
-        }
-        
         if (!config.isEnabled()) {
             if (config.isDebugMode()) {
                 plugin.getLogger().info("[DEBUG] [" + player.getName() + "] Plugin disabled");
@@ -213,7 +247,7 @@ public class ChargeListener implements Listener {
             return false;
         }
         
-        if (!safetyValidator.canStartCharge(player, messages)) {
+        if (!safetyValidator.canStartCharge(player, messages, skipGroundCheck)) {
             if (config.isDebugMode()) {
                 plugin.getLogger().info("[DEBUG] [" + player.getName() + "] Failed safety checks");
             }
@@ -268,90 +302,14 @@ public class ChargeListener implements Listener {
         }
     }
 
-    private TriggerAction getFirstAction() {
-        return parseAction(config.getChargeTriggerFirst(), TriggerAction.SNEAK);
-    }
-
-    private TriggerAction getSecondAction() {
-        return parseAction(config.getChargeTriggerSecond(), TriggerAction.JUMP);
-    }
-
     private boolean isLegacySneakJump() {
-        // Legacy mode is active when config still uses charge.trigger: SNEAK_JUMP.
-        // If the new keys are present, treat it as new behavior.
-        if (config.getConfig() != null && (config.getConfig().contains("charge.trigger.first") || config.getConfig().contains("charge.trigger.second"))) {
-            return false;
+        // Legacy: charge.trigger was the string "SNEAK_JUMP" before v5.
+        // With the new single trigger key this is now just SNEAK_JUMP.
+        // Keep this check so the old PlayerMove path still works during migration.
+        if (config.getConfig() != null && config.getConfig().isString("charge.trigger")) {
+            String val = config.getConfig().getString("charge.trigger", "");
+            return val != null && val.trim().equalsIgnoreCase("SNEAK_JUMP");
         }
-        String legacy = config.getConfig() == null ? null : config.getConfig().getString("charge.trigger");
-        return legacy != null && legacy.trim().equalsIgnoreCase("SNEAK_JUMP");
-    }
-
-    private TriggerAction parseAction(String raw, TriggerAction fallback) {
-        if (raw == null) {
-            return fallback;
-        }
-        try {
-            return TriggerAction.valueOf(raw.trim().toUpperCase());
-        } catch (IllegalArgumentException ignored) {
-            return fallback;
-        }
-    }
-
-    private void handleStartTriggerAction(Player player, TriggerAction action) {
-        if (action == TriggerAction.NONE) {
-            return;
-        }
-        if (chargeManager.isCharging(player)) {
-            return;
-        }
-
-        TriggerAction first = getFirstAction();
-        TriggerAction second = getSecondAction();
-        UUID id = player.getUniqueId();
-        long now = System.currentTimeMillis();
-
-        // If second is NONE, start immediately when first action happens.
-        if (second == TriggerAction.NONE) {
-            if (action == first) {
-                if (canStartChargeWithFeedback(player)) {
-                    startChargeNow(player);
-                }
-            }
-            return;
-        }
-
-        // Two-step logic (also supports "double sneak" or "double jump" by using same action twice).
-        PendingTrigger pending = pendingTriggers.get(id);
-        long windowMs = 1200L;
-
-        if (pending != null && now - pending.firstTimeMs > windowMs) {
-            pendingTriggers.remove(id);
-            pending = null;
-        }
-
-        if (pending == null) {
-            if (action == first) {
-                pendingTriggers.put(id, new PendingTrigger(first, now));
-            }
-            return;
-        }
-
-        // If first==second, require the same action twice.
-        if (first == second) {
-            if (action == first) {
-                pendingTriggers.remove(id);
-                if (canStartChargeWithFeedback(player)) {
-                    startChargeNow(player);
-                }
-            }
-            return;
-        }
-
-        if (pending.firstAction == first && action == second) {
-            pendingTriggers.remove(id);
-            if (canStartChargeWithFeedback(player)) {
-                startChargeNow(player);
-            }
-        }
+        return false;
     }
 }

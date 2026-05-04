@@ -6,9 +6,9 @@
 
 prefix: "<gradient:#00d9ff:#00bfff>âš¡ RelishTravel</gradient> <dark_gray>|</dark_gray> "
 
-# â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
+# â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
 # GENERAL MESSAGES
-# â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
+# â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
 
 messages:
   # Charge related messages
@@ -32,7 +32,8 @@ messages:
     in-lava: "<red>âœ– <gray>Cannot launch while in lava!"
     has-levitation: "<red>âœ– <gray>Cannot launch with levitation effect!"
     chest-slot-blocked: "<red>âœ– <gray>Chest slot must be empty or contain only an Elytra!"
-    already-flying: "<red>âœ– <gray>Cannot launch while already flying or gliding!"
+    already-flying: "<red>✖ <gray>Cannot launch while already flying or gliding!"
+    in-air: "<red>✖ <gray>Cannot launch while airborne - land first!"
     
   # Elytra related messages
   elytra:
@@ -53,8 +54,8 @@ messages:
     no-permission: "<red>âœ– <gray>You don't have permission to use this command"
     cleanup-success: "<green>âœ” <gray>Forced cleanup complete! Temp Elytra removed if present"
     toggle:
-      enabled: "<green>OK <gray>Charging enabled."
-      disabled: "<yellow>OFF <gray>Charging disabled."
+      enabled: "<green>âœ” <gray>Charging enabled."
+      disabled: "<red>âœ– <gray>Charging disabled."
     
     # Launch command messages
     launch:
@@ -70,13 +71,13 @@ messages:
     
     # Help/Usage messages
     help:
-      header: "<#00d9ff><strikethrough>â”â”â”â”â”â”</strikethrough> <bold>RelishTravel</bold> <#00d9ff><strikethrough>â”â”â”â”â”â”</strikethrough>"
+      header: "<#00d9ff><strikethrough>â”â”â”â”â”â”</strikethrough> <bold>RelishTravel</bold> <#00d9ff><strikethrough>â”â”â”â”â”â”</strikethrough>"
       reload: "<#00bfff>/rt reload <gray>- Reload configuration"
       launch: "<#00bfff>/rt launch [percent] <gray>- Fast launch"
       cleanup: "<#00bfff>/rt cleanup <gray>- Force cleanup"
       toggle: "<#00bfff>/rt toggle <gray>- Toggle charging on/off"
       rtl: "<#00bfff>/rtl [percent] <gray>- Quick launch"
-      footer: "<#00d9ff><strikethrough>â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”</strikethrough>"
+      footer: "<#00d9ff><strikethrough>â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”</strikethrough>"
     
   # World restriction message
   world:

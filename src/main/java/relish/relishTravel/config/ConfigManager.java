@@ -42,45 +42,46 @@ public class ConfigManager {
         return config.getBoolean("charge.cancel-on-move", true);
     }
 
-    public String getChargeTriggerFirst() {
-        if (config.contains("charge.trigger.first")) {
-            return config.getString("charge.trigger.first", "SNEAK");
+    /**
+     * Returns the charge trigger mode.
+     * Valid values: SNEAK, SNEAK_JUMP, JUMP_SNEAK
+     * All modes release/launch on sneak release.
+     */
+    public String getChargeTrigger() {
+        // New single-key format
+        if (config.contains("charge.trigger") && config.isString("charge.trigger")) {
+            String val = config.getString("charge.trigger", "SNEAK_JUMP");
+            if (val != null) {
+                String upper = val.trim().toUpperCase();
+                if (upper.equals("SNEAK") || upper.equals("SNEAK_JUMP") || upper.equals("JUMP_SNEAK")) {
+                    return upper;
+                }
+            }
         }
 
-        // Legacy fallback
-        String legacy = config.getString("charge.trigger", "SNEAK_JUMP");
-        if (legacy == null) {
-            return "SNEAK";
+        // Legacy: charge.trigger.first/second
+        if (config.contains("charge.trigger.first")) {
+            String first = config.getString("charge.trigger.first", "SNEAK").trim().toUpperCase();
+            String second = config.getString("charge.trigger.second", "JUMP").trim().toUpperCase();
+            if (first.equals("SNEAK") && second.equals("NONE")) return "SNEAK";
+            if (first.equals("SNEAK") && second.equals("JUMP")) return "SNEAK_JUMP";
+            if (first.equals("JUMP") && second.equals("SNEAK")) return "JUMP_SNEAK";
+            return "SNEAK_JUMP";
         }
-        String upper = legacy.trim().toUpperCase();
-        if (upper.equals("SNEAK_JUMP")) {
-            return "SNEAK";
-        }
-        if (upper.equals("SNEAK")) {
-            return "SNEAK";
-        }
-        if (upper.equals("JUMP")) {
-            return "JUMP";
-        }
+
+        return "SNEAK_JUMP";
+    }
+
+    public String getChargeTriggerFirst() {
+        String t = getChargeTrigger();
+        if (t.equals("JUMP_SNEAK")) return "JUMP";
         return "SNEAK";
     }
 
     public String getChargeTriggerSecond() {
-        if (config.contains("charge.trigger.second")) {
-            return config.getString("charge.trigger.second", "JUMP");
-        }
-
-        // Legacy fallback
-        String legacy = config.getString("charge.trigger", "SNEAK_JUMP");
-        if (legacy == null) {
-            return "JUMP";
-        }
-        String upper = legacy.trim().toUpperCase();
-        if (upper.equals("SNEAK_JUMP")) {
-            return "JUMP";
-        }
-        // If legacy is a single-action trigger, second is NONE.
-        return "NONE";
+        String t = getChargeTrigger();
+        if (t.equals("SNEAK")) return "NONE";
+        return "JUMP";
     }
     
     public double getMinPower() {

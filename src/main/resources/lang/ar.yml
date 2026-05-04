@@ -33,6 +33,7 @@ messages:
     has-levitation: "<red>✖ <gray>لا يمكن الإطلاق مع تأثير الارتفاع!"
     chest-slot-blocked: "<red>✖ <gray>يجب أن تكون فتحة الصدر فارغة أو تحتوي على Elytra فقط!"
     already-flying: "<red>✖ <gray>لا يمكن الإطلاق أثناء الطيران أو الانزلاق بالفعل!"
+    in-air: "<red>✖ <gray>لا يمكن الإطلاق أثناء التحليق - الهبوط أولاً!"
     
   # رسائل Elytra
   elytra:
@@ -52,6 +53,9 @@ messages:
     reload-failed: "<red>✖ <gray>فشل في إعادة تحميل الإعدادات!"
     no-permission: "<red>✖ <gray>ليس لديك إذن لاستخدام هذا الأمر"
     cleanup-success: "<green>✔ <gray>تم التنظيف الإجباري! تمت إزالة Elytra المؤقت إن وجد"
+    toggle:
+      enabled: "<green>✔ <gray>تم تفعيل الشحن."
+      disabled: "<red>✖ <gray>تم تعطيل الشحن."
     
     # رسائل أمر الإطلاق
     launch:

@@ -15,14 +15,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
 public class ChargeManager {
 
     private final RelishTravel plugin;
     private final Map<UUID, ChargeState> chargingPlayers;
     private final Map<UUID, Long> lastSoundTime;
-
     private final Map<UUID, BossBar> bossBars;
+    /** Per-player callback invoked (once) when charge reaches 100%. Null = no auto-fire. */
+    private final Map<UUID, Consumer<Player>> onCompleteCallbacks;
 
     private int taskId = -1;
 
@@ -37,6 +39,7 @@ public class ChargeManager {
         this.chargingPlayers = new ConcurrentHashMap<>();
         this.lastSoundTime = new ConcurrentHashMap<>();
         this.bossBars = new ConcurrentHashMap<>();
+        this.onCompleteCallbacks = new ConcurrentHashMap<>();
         updateConfigCache();
         startChargeUpdateTask();
     }
@@ -57,18 +60,34 @@ public class ChargeManager {
     }
 
     public void startCharge(Player player, double maxChargeTime) {
+        startCharge(player, maxChargeTime, null);
+    }
+
+    /**
+     * Start charging for a player.
+     *
+     * @param onComplete optional callback fired once when charge reaches 100%.
+     *                   Use this for triggers that have no manual release (e.g. jump-only).
+     */
+    public void startCharge(Player player, double maxChargeTime, Consumer<Player> onComplete) {
         UUID playerId = player.getUniqueId();
         Location startLocation = player.getLocation().clone();
         long startTime = System.currentTimeMillis();
 
         ChargeState state = new ChargeState(startLocation, startTime, maxChargeTime, true);
         chargingPlayers.put(playerId, state);
+        if (onComplete != null) {
+            onCompleteCallbacks.put(playerId, onComplete);
+        } else {
+            onCompleteCallbacks.remove(playerId);
+        }
     }
 
     public void cancelCharge(Player player) {
         UUID playerId = player.getUniqueId();
         chargingPlayers.remove(playerId);
         lastSoundTime.remove(playerId);
+        onCompleteCallbacks.remove(playerId);
 
         BossBar bar = bossBars.remove(playerId);
         if (bar != null) {
@@ -131,6 +150,14 @@ public class ChargeManager {
 
                 if (particlesEnabled) {
                     spawnParticles(player, state);
+                }
+
+                // Auto-fire: if a completion callback is registered and charge is full, invoke it.
+                if (state.isComplete() && onCompleteCallbacks.containsKey(playerId)) {
+                    Consumer<Player> callback = onCompleteCallbacks.remove(playerId);
+                    if (callback != null) {
+                        callback.accept(player);
+                    }
                 }
             }
         }, 0L, updateTicks);
@@ -258,6 +285,7 @@ public class ChargeManager {
         chargingPlayers.clear();
         lastSoundTime.clear();
         bossBars.clear();
+        onCompleteCallbacks.clear();
         if (taskId != -1) {
             Bukkit.getScheduler().cancelTask(taskId);
         }

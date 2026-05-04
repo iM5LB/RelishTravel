@@ -19,16 +19,12 @@ charge:
   # Maximum time in seconds to fully charge (2.5 seconds default)
   max-time: 2.5
 
-  # Charging trigger (two-step)
-  # Options: SNEAK, JUMP, NONE
-  # Examples:
-  # - Start on sneak only: first: SNEAK, second: NONE
-  # - Start on jump only:  first: JUMP,  second: NONE
-  # - Start on sneak then jump: first: SNEAK, second: JUMP
-  # - Start on jump then sneak: first: JUMP, second: SNEAK
-  trigger:
-    first: "SNEAK"
-    second: "JUMP"
+  # Charging trigger
+  # Options:
+  #   SNEAK       - Hold sneak to charge, release sneak to launch
+  #   SNEAK_JUMP  - Sneak then jump to start charging, release sneak to launch
+  #   JUMP_SNEAK  - Jump then sneak to start charging, release sneak to launch
+  trigger: "SNEAK_JUMP"
   
   # Cancel charging if player moves
   cancel-on-move: true
