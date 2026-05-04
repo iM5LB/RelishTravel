@@ -1,0 +1,41 @@
+src/main/java/relish/relishTravel/RelishTravel.java
+  c8ab5285586b838e 4,24-27,39-41,212-228
+src/main/java/relish/relishTravel/command/RelishTravelCommand.java
+  c8ab5285586b838e 23,31,50-54,61,79
+src/main/java/relish/relishTravel/listener/ChargeListener.java
+  c8ab5285586b838e 28,35-50,61,76-87,101,103,105-106,113-121,146-148,152-153,260-344
+src/main/java/relish/relishTravel/command/ToggleCommand.java
+  c8ab5285586b838e 1-36
+src/main/resources/lang/en.yml
+  c8ab5285586b838e 1,7,9,11,16-20,24-27,31-35,39-42,46-47,51-57,61-69,73,77,79,83
+src/main/java/relish/relishTravel/config/ConfigManager.java
+  c8ab5285586b838e 44-84
+src/main/resources/config.yml
+  c8ab5285586b838e 21-31
+src/main/java/relish/relishTravel/config/ConfigUpdater.java
+  c8ab5285586b838e 153-155,163-196
+docs/Changelog.md
+  c8ab5285586b838e 1,4-12,29-34,39
+src/main/resources/plugin.yml
+  c8ab5285586b838e 12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "36ddb5dcb601e511e799c85b04208d287f8cad75",
+  "prompts": {
+    "c8ab5285586b838e": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019c4ddf-2140-7930-a83b-575dbe038e2f",
+        "model": "gpt-5.2"
+      },
+      "human_author": "iM5LB",
+      "messages": [],
+      "total_additions": 532,
+      "total_deletions": 100,
+      "accepted_lines": 564,
+      "overriden_lines": 0
+    }
+  }
+}
