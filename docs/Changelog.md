@@ -6,10 +6,30 @@ All notable changes to RelishTravel.
 ### Changed
 
 **Charging Trigger:**
-- Charging input is now configurable as two actions:
-  - `charge.trigger.first`: `SNEAK` or `JUMP`
-  - `charge.trigger.second`: `SNEAK`, `JUMP`, or `NONE`
-- Added `/rt toggle` to enable/disable charging per-player.
+- Replaced `charge.trigger.first` / `charge.trigger.second` with a single `charge.trigger` option.
+- Valid values:
+  - `SNEAK` — hold sneak to charge, release sneak to launch
+  - `SNEAK_JUMP` — sneak then jump to start charging, release sneak to launch
+  - `JUMP_SNEAK` — jump then sneak to start charging, release sneak to launch
+- All modes use sneak release as the launch mechanism — consistent behavior across all options.
+- Auto-migrates old `first`/`second` keys on startup (config version bumped to 5).
+
+### Fixed
+
+**Feedback Messages:**
+- Fixed "Cannot launch while already flying or gliding" being shown when sneaking mid-air (e.g. while gliding to boost) — now silent for passive trigger checks.
+- Added distinct `safety.in-air` message for when the player is airborne but not flying/gliding.
+- Fixed duplicate message when flying/gliding check ran in both `ChargeListener` and `SafetyValidator`.
+
+**JUMP_SNEAK Trigger:**
+- Fixed `JUMP_SNEAK` not working — sneak after jump now correctly starts charging whether mid-air or after landing.
+- Extended pending jump window to 2 seconds for comfortable timing.
+
+**Arabic Language:**
+- Added missing `toggle` section to `ar.yml`.
+
+**Toggle Messages:**
+- Fixed toggle enabled/disabled messages using old `OK`/`OFF` style instead of `✔`/`✖`.
 
 ## [1.0.4] - 2026-04-29
 
