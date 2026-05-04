@@ -41,6 +41,47 @@ public class ConfigManager {
     public boolean isCancelOnMove() {
         return config.getBoolean("charge.cancel-on-move", true);
     }
+
+    public String getChargeTriggerFirst() {
+        if (config.contains("charge.trigger.first")) {
+            return config.getString("charge.trigger.first", "SNEAK");
+        }
+
+        // Legacy fallback
+        String legacy = config.getString("charge.trigger", "SNEAK_JUMP");
+        if (legacy == null) {
+            return "SNEAK";
+        }
+        String upper = legacy.trim().toUpperCase();
+        if (upper.equals("SNEAK_JUMP")) {
+            return "SNEAK";
+        }
+        if (upper.equals("SNEAK")) {
+            return "SNEAK";
+        }
+        if (upper.equals("JUMP")) {
+            return "JUMP";
+        }
+        return "SNEAK";
+    }
+
+    public String getChargeTriggerSecond() {
+        if (config.contains("charge.trigger.second")) {
+            return config.getString("charge.trigger.second", "JUMP");
+        }
+
+        // Legacy fallback
+        String legacy = config.getString("charge.trigger", "SNEAK_JUMP");
+        if (legacy == null) {
+            return "JUMP";
+        }
+        String upper = legacy.trim().toUpperCase();
+        if (upper.equals("SNEAK_JUMP")) {
+            return "JUMP";
+        }
+        // If legacy is a single-action trigger, second is NONE.
+        return "NONE";
+    }
     
     public double getMinPower() {
         return config.getDouble("launch.min-power", 0.6);

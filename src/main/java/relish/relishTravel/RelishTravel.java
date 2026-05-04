@@ -1,6 +1,7 @@
 package relish.relishTravel;
 
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.entity.Player;
 import relish.relishTravel.command.LaunchCommand;
 import relish.relishTravel.command.RelishTravelCommand;
 import relish.relishTravel.config.ConfigManager;
@@ -20,6 +21,10 @@ import relish.relishTravel.listener.UpdateNotifyListener;
 import relish.relishTravel.message.MessageManager;
 import relish.relishTravel.util.UpdateChecker;
 
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+
 public class RelishTravel extends JavaPlugin {
     
     private ConfigManager configManager;
@@ -31,6 +36,9 @@ public class RelishTravel extends JavaPlugin {
     private SpeedDisplayHandler speedDisplayHandler;
     private PersistenceHandler persistenceHandler;
     private UpdateChecker updateChecker;
+
+    // Per-player toggle: if present, charging is disabled for that player.
+    private final Set<UUID> chargingDisabled = ConcurrentHashMap.newKeySet();
     
     @Override
     public void onEnable() {
@@ -200,6 +208,24 @@ public class RelishTravel extends JavaPlugin {
             speedDisplayHandler.onConfigReload();
         }
         registerDynamicPermissions();
+    }
+
+    public boolean isChargingEnabled(Player player) {
+        return player != null && !chargingDisabled.contains(player.getUniqueId());
+    }
+
+    public boolean toggleCharging(Player player) {
+        UUID id = player.getUniqueId();
+        if (chargingDisabled.contains(id)) {
+            chargingDisabled.remove(id);
+            return true;
+        }
+
+        chargingDisabled.add(id);
+        if (chargeManager != null) {
+            chargeManager.cancelCharge(player);
+        }
+        return false;
     }
     
     private void registerDynamicPermissions() {

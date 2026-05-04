@@ -1,6 +1,15 @@
-# Changelog
+﻿# Changelog
 
 All notable changes to RelishTravel.
+## [1.0.5] - 2026-05-04
+
+### Changed
+
+**Charging Trigger:**
+- Charging input is now configurable as two actions:
+  - `charge.trigger.first`: `SNEAK` or `JUMP`
+  - `charge.trigger.second`: `SNEAK`, `JUMP`, or `NONE`
+- Added `/rt toggle` to enable/disable charging per-player.
 
 ## [1.0.4] - 2026-04-29
 
@@ -17,10 +26,17 @@ All notable changes to RelishTravel.
   - Auto-glide equip sound: `launch.auto-glide-equip-sound-enabled`
   - Boost use: `launch.boost.sound-enabled`
 
+**Charging Trigger:**
+- Charging input is now configurable as two actions:
+  - `charge.trigger.first`: `SNEAK` or `JUMP`
+  - `charge.trigger.second`: `SNEAK`, `JUMP`, or `NONE`
+- Supports “double action” setups by setting `first == second` (example: double sneak).
+
 ### Fixed
 
 **Config Updates:**
 - Improved config merge/migrations for nested keys and new sections.
+- Added migration from legacy `charge.trigger` (string) to `charge.trigger.first/second`.
 
 ## [1.0.3] - 2026-03-17
 

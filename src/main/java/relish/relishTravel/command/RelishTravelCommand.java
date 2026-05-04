@@ -20,6 +20,7 @@ public class RelishTravelCommand implements CommandExecutor, TabCompleter {
     private final ReloadCommand reloadCommand;
     private final LaunchCommand launchCommand;
     private final CleanupCommand cleanupCommand;
+    private final ToggleCommand toggleCommand;
     
     public RelishTravelCommand(RelishTravel plugin, ConfigManager config, MessageManager messages) {
         this.plugin = plugin;
@@ -27,6 +28,7 @@ public class RelishTravelCommand implements CommandExecutor, TabCompleter {
         this.reloadCommand = new ReloadCommand(plugin, config, messages);
         this.launchCommand = new LaunchCommand(plugin, config, messages);
         this.cleanupCommand = new CleanupCommand(plugin, messages);
+        this.toggleCommand = new ToggleCommand(plugin, messages);
     }
     
     @Override
@@ -45,12 +47,18 @@ public class RelishTravelCommand implements CommandExecutor, TabCompleter {
             return cleanupCommand.onCommand(sender, command, label, 
                 Arrays.copyOfRange(args, 1, args.length));
         }
+
+        if (args.length > 0 && args[0].equalsIgnoreCase("toggle")) {
+            return toggleCommand.onCommand(sender, command, label,
+                Arrays.copyOfRange(args, 1, args.length));
+        }
         
         if (sender instanceof Player player) {
             messages.sendMessage(player, "command.help.header");
             messages.sendMessage(player, "command.help.reload");
             messages.sendMessage(player, "command.help.launch");
             messages.sendMessage(player, "command.help.cleanup");
+            messages.sendMessage(player, "command.help.toggle");
             messages.sendMessage(player, "command.help.rtl");
             messages.sendMessage(player, "command.help.footer");
         } else {
@@ -68,6 +76,7 @@ public class RelishTravelCommand implements CommandExecutor, TabCompleter {
             suggestions.add("reload");
             suggestions.add("launch");
             suggestions.add("cleanup");
+            suggestions.add("toggle");
         } else if (args.length == 2 && args[0].equalsIgnoreCase("launch")) {
             suggestions.add("25");
             suggestions.add("50");

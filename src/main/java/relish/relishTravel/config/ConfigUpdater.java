@@ -150,11 +150,50 @@ public class ConfigUpdater {
             moved++;
         }
 
+        // charge.trigger (legacy string) -> charge.trigger.first/second
+        migrateChargeTrigger(config);
+
         if (moved > 0) {
             plugin.getLogger().info("Config migration v4: removed " + moved + " legacy key(s)");
         } else {
             plugin.getLogger().info("Config migration v4: no changes needed");
         }
+    }
+
+    private void migrateChargeTrigger(FileConfiguration config) {
+        // Convert legacy charge.trigger (string) into charge.trigger.first/second.
+        if (!config.isString("charge.trigger")) {
+            return;
+        }
+        if (config.contains("charge.trigger.first") || config.contains("charge.trigger.second")) {
+            // Already migrated or user already uses new format.
+            return;
+        }
+
+        String legacy = config.getString("charge.trigger", "SNEAK_JUMP");
+        if (legacy == null) {
+            legacy = "SNEAK_JUMP";
+        }
+        String upper = legacy.trim().toUpperCase();
+
+        String first = "SNEAK";
+        String second = "JUMP";
+
+        if (upper.equals("SNEAK")) {
+            first = "SNEAK";
+            second = "NONE";
+        } else if (upper.equals("JUMP")) {
+            first = "JUMP";
+            second = "NONE";
+        } else if (upper.equals("SNEAK_JUMP")) {
+            first = "SNEAK";
+            second = "JUMP";
+        }
+
+        config.set("charge.trigger.first", first);
+        config.set("charge.trigger.second", second);
+        config.set("charge.trigger", null);
+        plugin.getLogger().info("Config migration: converted legacy charge.trigger to charge.trigger.first/second");
     }
 
     private int moveKeyIfMissing(FileConfiguration config, String fromPath, String toPath) {

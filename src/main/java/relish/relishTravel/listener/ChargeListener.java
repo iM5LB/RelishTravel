@@ -25,11 +25,28 @@ public class ChargeListener implements Listener {
     private final SafetyValidator safetyValidator;
     private final Map<UUID, JumpState> sneakingPlayers;
     private final Map<UUID, Long> lastJumpTime;
+    private final Map<UUID, PendingTrigger> pendingTriggers;
     
     private enum JumpState {
         SNEAKING,
         JUMPED_SAFE,
         JUMPED_UNSAFE
+    }
+
+    private enum TriggerAction {
+        SNEAK,
+        JUMP,
+        NONE
+    }
+
+    private static class PendingTrigger {
+        TriggerAction firstAction;
+        long firstTimeMs;
+
+        PendingTrigger(TriggerAction firstAction, long firstTimeMs) {
+            this.firstAction = firstAction;
+            this.firstTimeMs = firstTimeMs;
+        }
     }
     
     public ChargeListener(RelishTravel plugin, ChargeManager chargeManager,
@@ -41,6 +58,7 @@ public class ChargeListener implements Listener {
         this.safetyValidator = new SafetyValidator(config);
         this.sneakingPlayers = new java.util.concurrent.ConcurrentHashMap<>();
         this.lastJumpTime = new java.util.concurrent.ConcurrentHashMap<>();
+        this.pendingTriggers = new java.util.concurrent.ConcurrentHashMap<>();
     }
     
     @EventHandler(priority = EventPriority.HIGH)
@@ -53,6 +71,18 @@ public class ChargeListener implements Listener {
         }
         
         if (!player.hasPermission("relishtravel.use")) {
+            return;
+        }
+
+        if (!plugin.isChargingEnabled(player)) {
+            // If they disable charging while already sneaking/charging, keep things clean.
+            if (!event.isSneaking()) {
+                sneakingPlayers.remove(playerId);
+                lastJumpTime.remove(playerId);
+            }
+            if (chargeManager.isCharging(player)) {
+                chargeManager.cancelCharge(player);
+            }
             return;
         }
         
@@ -68,16 +98,27 @@ public class ChargeListener implements Listener {
         if (!event.isSneaking()) {
             sneakingPlayers.remove(playerId);
             lastJumpTime.remove(playerId);
+            pendingTriggers.remove(playerId);
             handleChargeRelease(player);
+            return;
         }
+
+        handleStartTriggerAction(player, TriggerAction.SNEAK);
     }
     
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
         UUID playerId = player.getUniqueId();
-        
-        if (!player.isSneaking()) {
+
+        if (!plugin.isChargingEnabled(player)) {
+            return;
+        }
+
+        // Detect a jump (best-effort; Bukkit doesn't expose a dedicated jump event).
+        if (!player.isSneaking() && getFirstAction() == TriggerAction.SNEAK) {
+            // If the first action is sneak, we only care about jump while sneaking (unless second is NONE).
+            // This keeps accidental jumps from triggering charge when not sneaking.
             return;
         }
         
@@ -102,10 +143,14 @@ public class ChargeListener implements Listener {
                 
                 sneakingPlayers.put(playerId, JumpState.JUMPED_SAFE);
                 lastJumpTime.put(playerId, now);
+
+                // Jump action for the trigger system.
+                handleStartTriggerAction(player, TriggerAction.JUMP);
                 return;
             }
             
-            if (state == JumpState.JUMPED_SAFE && player.isOnGround()) {
+            // Legacy SNEAK_JUMP behavior: start charging on landing after a sneak+jump.
+            if (isLegacySneakJump() && state == JumpState.JUMPED_SAFE && player.isOnGround() && player.isSneaking()) {
                 if (canStartChargeWithFeedback(player)) {
                     startChargeNow(player);
                 }
@@ -209,6 +254,93 @@ public class ChargeListener implements Listener {
         } else {
             if (config.isDebugMode()) {
                 plugin.getLogger().info("[DEBUG] [" + player.getName() + "] Launch SUCCESS");
+            }
+        }
+    }
+
+    private TriggerAction getFirstAction() {
+        return parseAction(config.getChargeTriggerFirst(), TriggerAction.SNEAK);
+    }
+
+    private TriggerAction getSecondAction() {
+        return parseAction(config.getChargeTriggerSecond(), TriggerAction.JUMP);
+    }
+
+    private boolean isLegacySneakJump() {
+        // Legacy mode is active when config still uses charge.trigger: SNEAK_JUMP.
+        // If the new keys are present, treat it as new behavior.
+        if (config.getConfig() != null && (config.getConfig().contains("charge.trigger.first") || config.getConfig().contains("charge.trigger.second"))) {
+            return false;
+        }
+        String legacy = config.getConfig() == null ? null : config.getConfig().getString("charge.trigger");
+        return legacy != null && legacy.trim().equalsIgnoreCase("SNEAK_JUMP");
+    }
+
+    private TriggerAction parseAction(String raw, TriggerAction fallback) {
+        if (raw == null) {
+            return fallback;
+        }
+        try {
+            return TriggerAction.valueOf(raw.trim().toUpperCase());
+        } catch (IllegalArgumentException ignored) {
+            return fallback;
+        }
+    }
+
+    private void handleStartTriggerAction(Player player, TriggerAction action) {
+        if (action == TriggerAction.NONE) {
+            return;
+        }
+        if (chargeManager.isCharging(player)) {
+            return;
+        }
+
+        TriggerAction first = getFirstAction();
+        TriggerAction second = getSecondAction();
+        UUID id = player.getUniqueId();
+        long now = System.currentTimeMillis();
+
+        // If second is NONE, start immediately when first action happens.
+        if (second == TriggerAction.NONE) {
+            if (action == first) {
+                if (canStartChargeWithFeedback(player)) {
+                    startChargeNow(player);
+                }
+            }
+            return;
+        }
+
+        // Two-step logic (also supports "double sneak" or "double jump" by using same action twice).
+        PendingTrigger pending = pendingTriggers.get(id);
+        long windowMs = 1200L;
+
+        if (pending != null && now - pending.firstTimeMs > windowMs) {
+            pendingTriggers.remove(id);
+            pending = null;
+        }
+
+        if (pending == null) {
+            if (action == first) {
+                pendingTriggers.put(id, new PendingTrigger(first, now));
+            }
+            return;
+        }
+
+        // If first==second, require the same action twice.
+        if (first == second) {
+            if (action == first) {
+                pendingTriggers.remove(id);
+                if (canStartChargeWithFeedback(player)) {
+                    startChargeNow(player);
+                }
+            }
+            return;
+        }
+
+        if (pending.firstAction == first && action == second) {
+            pendingTriggers.remove(id);
+            if (canStartChargeWithFeedback(player)) {
+                startChargeNow(player);
             }
         }
     }
