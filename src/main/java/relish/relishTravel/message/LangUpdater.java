@@ -70,11 +70,11 @@ public class LangUpdater {
 
             FileConfiguration defaultCfg = YamlConfiguration.loadConfiguration(new InputStreamReader(in, StandardCharsets.UTF_8));
 
-            boolean updated = mergeMissing(defaultCfg, serverCfg, "");
-            if (updated) {
+            int added = mergeMissingLeaves(defaultCfg, serverCfg);
+            if (added > 0) {
                 backup(langFile);
                 serverCfg.save(langFile);
-                plugin.getLogger().info("Language file updated with new keys: " + langFile.getName());
+                plugin.getLogger().info("Language file updated with " + added + " new key(s): " + langFile.getName());
             }
         } catch (Exception e) {
             plugin.getLogger().warning("Failed to update language file: " + langFile.getName() + " (" + e.getMessage() + ")");
@@ -106,38 +106,26 @@ public class LangUpdater {
         }
     }
 
-    private boolean mergeMissing(FileConfiguration sourceRoot, FileConfiguration targetRoot, String basePath) {
-        boolean updated = false;
+    private int mergeMissingLeaves(FileConfiguration sourceRoot, FileConfiguration targetRoot) {
+        // Use a leaf-key merge to avoid Bukkit edge-cases with section detection.
+        int added = 0;
 
-        ConfigurationSection sourceSection =
-            basePath.isEmpty() ? sourceRoot : sourceRoot.getConfigurationSection(basePath);
-        ConfigurationSection targetSection =
-            basePath.isEmpty() ? targetRoot : targetRoot.getConfigurationSection(basePath);
+        for (var entry : sourceRoot.getValues(true).entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
 
-        if (sourceSection == null) {
-            return false;
-        }
-
-        if (!basePath.isEmpty() && targetSection == null) {
-            targetSection = targetRoot.createSection(basePath);
-            updated = true;
-        }
-
-        for (String key : sourceSection.getKeys(false)) {
-            String fullKey = basePath.isEmpty() ? key : basePath + "." + key;
-
-            if (sourceSection.isConfigurationSection(key)) {
-                updated |= mergeMissing(sourceRoot, targetRoot, fullKey);
+            if (value instanceof ConfigurationSection) {
                 continue;
             }
 
-            if (!targetRoot.contains(fullKey)) {
-                targetRoot.set(fullKey, sourceRoot.get(fullKey));
-                updated = true;
+            // If the key is missing, add it. We intentionally do NOT overwrite custom server values.
+            if (!targetRoot.isSet(key)) {
+                targetRoot.set(key, value);
+                added++;
             }
         }
 
-        return updated;
+        return added;
     }
 
     private void backup(File langFile) throws IOException {
@@ -147,4 +135,3 @@ public class LangUpdater {
         Files.copy(langFile.toPath(), backupFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
     }
 }
-
