@@ -121,7 +121,10 @@ public class ConfigManager {
     }
     
     public String getBoostTrigger() {
-        return config.getString("launch.boost.trigger", "RIGHT_CLICK");
+        String val = config.getString("launch.boost.trigger", "SNEAK");
+        if (val == null) return "SNEAK";
+        String upper = val.trim().toUpperCase();
+        return (upper.equals("SNEAK") || upper.equals("JUMP")) ? upper : "SNEAK";
     }
     
     public double getRightClickBoostSpeed() {

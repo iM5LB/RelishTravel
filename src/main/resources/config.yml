@@ -2,7 +2,7 @@
 # A safe, controlled Elytra launch system for Minecraft 1.20+
 
 # Configuration version (DO NOT EDIT - Used for automatic config updates)
-config-version: 4
+config-version: 6
 
 # Language setting (en = English, ar = Arabic)
 # Language files are stored in plugins/RelishTravel/lang/
@@ -63,8 +63,14 @@ launch:
     speed: 2.0
     cooldown-seconds: 5
     allow-for-normal-elytra: true  # Allow boost for normal elytra users (not just RelishTravel launches)
-    sound-enabled: true  # Sound when a boost is used (right-click / sneak boost)
-    
+    sound-enabled: true  # Sound when a boost is used
+
+    # Boost trigger action while gliding
+    # Options:
+    #   SNEAK - Sneak while gliding to boost
+    #   JUMP  - Jump while gliding to boost
+    trigger: "SNEAK"
+
     # Permission-based boost limits
     # Players will get the highest limit from all permissions they have
     # Use -1 for unlimited boosts

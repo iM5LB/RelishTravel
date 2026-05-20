@@ -1,6 +1,25 @@
 ﻿# Changelog
 
 All notable changes to RelishTravel.
+
+## [1.0.6] - 2026-05-20
+
+### Added
+
+**Boost Trigger:**
+- Added `launch.boost.trigger` config option to control how the boost is activated while gliding.
+- Valid values:
+  - `SNEAK` — sneak while gliding to boost (default, existing behaviour)
+  - `JUMP` — press jump while gliding to boost
+
+**Toggle Status:**
+- Added `/rt toggle status` to check whether charging is currently enabled or disabled for you.
+
+### Fixed
+
+**Language Files:**
+- Restored broken emoji/unicode characters (`⚡`, `✖`, `⌛`, `✔`, `─`) in `en.yml` that were corrupted by a UTF-8 encoding issue.
+
 ## [1.0.5] - 2026-05-04
 
 ### Changed

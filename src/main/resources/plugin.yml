@@ -9,7 +9,7 @@ website: https://modrinth.com/plugin/relishtravel
 commands:
   relishtravel:
     description: Main RelishTravel command
-    usage: /<command> [reload|launch <percent>|cleanup|toggle]
+    usage: /<command> [reload|launch <percent>|cleanup|toggle [status]]
     aliases: [rt, rtravel]
     permission: relishtravel.use
   

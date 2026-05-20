@@ -4,81 +4,84 @@
 # Modern MiniMessage format with hex colors and organized sections
 # Color Palette: Cyan/Blue (#00d9ff, #00bfff, #00a8e8, #0096d6, #0084c4)
 
-prefix: "<gradient:#00d9ff:#00bfff>âš¡ RelishTravel</gradient> <dark_gray>|</dark_gray> "
+prefix: "<gradient:#00d9ff:#00bfff>⚡ RelishTravel</gradient> <dark_gray>|</dark_gray> "
 
-# â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
+# ────────────────────────────────────────────────────────────────────────────────
 # GENERAL MESSAGES
-# â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
+# ────────────────────────────────────────────────────────────────────────────────
 
 messages:
   # Charge related messages
   charge:
-    progress: "<gradient:#00d9ff:#00bfff>âš¡ Charging: <charge>%</gradient> <bar>"
-    cancelled-moved: "<red>âœ– <gray>Charge cancelled - you moved!"
-    cancelled-damaged: "<red>âœ– <gray>Charge cancelled - you took damage!"
-    cancelled-inventory: "<red>âœ– <gray>Charge cancelled - inventory opened!"
-    cancelled-chest-slot: "<red>âœ– <gray>Charge cancelled - chest slot changed!"
+    progress: "<gradient:#00d9ff:#00bfff>⚡ Charging: <charge>%</gradient> <bar>"
+    cancelled-moved: "<red>✖ <gray>Charge cancelled - you moved!"
+    cancelled-damaged: "<red>✖ <gray>Charge cancelled - you took damage!"
+    cancelled-inventory: "<red>✖ <gray>Charge cancelled - inventory opened!"
+    cancelled-chest-slot: "<red>✖ <gray>Charge cancelled - chest slot changed!"
     
   # Launch related messages
   launch:
-    failed: "<red>âœ– <gray>Launch failed - something went wrong"
-    cooldown: "<#00d9ff>âŒ› <gray>Please wait <white><time></white> before launching again"
-    obstruction: "<red>âœ– <gray>Cannot launch - blocked above! Need <white><height></white> blocks of clear space"
-    chunk-not-loaded: "<red>âœ– <gray>Cannot launch - area ahead not loaded!"
+    failed: "<red>✖ <gray>Launch failed - something went wrong"
+    cooldown: "<#00d9ff>⌛ <gray>Please wait <white><time></white> before launching again"
+    obstruction: "<red>✖ <gray>Cannot launch - blocked above! Need <white><height></white> blocks of clear space"
+    chunk-not-loaded: "<red>✖ <gray>Cannot launch - area ahead not loaded!"
     
   # Safety check messages
   safety:
-    in-water: "<red>âœ– <gray>Cannot launch while in water!"
-    in-lava: "<red>âœ– <gray>Cannot launch while in lava!"
-    has-levitation: "<red>âœ– <gray>Cannot launch with levitation effect!"
-    chest-slot-blocked: "<red>âœ– <gray>Chest slot must be empty or contain only an Elytra!"
+    in-water: "<red>✖ <gray>Cannot launch while in water!"
+    in-lava: "<red>✖ <gray>Cannot launch while in lava!"
+    has-levitation: "<red>✖ <gray>Cannot launch with levitation effect!"
+    chest-slot-blocked: "<red>✖ <gray>Chest slot must be empty or contain only an Elytra!"
     already-flying: "<red>✖ <gray>Cannot launch while already flying or gliding!"
     in-air: "<red>✖ <gray>Cannot launch while airborne - land first!"
     
   # Elytra related messages
   elytra:
-    equip-failed: "<red>âœ– <gray>Failed to equip Elytra!"
-    cannot-remove-during-flight: "<red>âœ– <gray>Cannot remove Elytra during flight!"
-    cannot-drop-during-flight: "<red>âœ– <gray>Cannot drop Elytra during flight!"
-    cannot-swap-during-flight: "<red>âœ– <gray>Cannot swap armor during flight!"
+    equip-failed: "<red>✖ <gray>Failed to equip Elytra!"
+    cannot-remove-during-flight: "<red>✖ <gray>Cannot remove Elytra during flight!"
+    cannot-drop-during-flight: "<red>✖ <gray>Cannot drop Elytra during flight!"
+    cannot-swap-during-flight: "<red>✖ <gray>Cannot swap armor during flight!"
     
   # Boost messages
   boost:
-    cooldown: "<#00d9ff>âŒ› <gray>Boost on cooldown! Wait <white><time></white>"
-    max-uses: "<red>âœ– <gray>No boosts remaining for this glide!"
+    cooldown: "<#00d9ff>⌛ <gray>Boost on cooldown! Wait <white><time></white>"
+    max-uses: "<red>✖ <gray>No boosts remaining for this glide!"
     
   # Command messages
   command:
-    reload-success: "<green>âœ” <gray>RelishTravel configuration reloaded!"
-    reload-failed: "<red>âœ– <gray>Failed to reload configuration!"
-    no-permission: "<red>âœ– <gray>You don't have permission to use this command"
-    cleanup-success: "<green>âœ” <gray>Forced cleanup complete! Temp Elytra removed if present"
+    reload-success: "<green>✔ <gray>RelishTravel configuration reloaded!"
+    reload-failed: "<red>✖ <gray>Failed to reload configuration!"
+    no-permission: "<red>✖ <gray>You don't have permission to use this command"
+    cleanup-success: "<green>✔ <gray>Forced cleanup complete! Temp Elytra removed if present"
     toggle:
-      enabled: "<green>âœ” <gray>Charging enabled."
-      disabled: "<red>âœ– <gray>Charging disabled."
+      enabled: "<green>✔ <gray>Charging enabled."
+      disabled: "<red>✖ <gray>Charging disabled."
+      status:
+        enabled: "<#00d9ff>⚡ <gray>Charging is currently <green>enabled</green>."
+        disabled: "<#00d9ff>⚡ <gray>Charging is currently <red>disabled</red>."
     
     # Launch command messages
     launch:
-      no-permission: "<red>âœ– <gray>You don't have permission to use this command"
-      invalid-percent: "<red>âœ– <gray>Percent must be between 0 and 100!"
-      invalid-format: "<red>âœ– <gray>Invalid percent! Usage: <white>/rtl <0-100></white>"
-      success: "<green>âœ” <gray>Launch at <#00d9ff><percent>%</#00d9ff> power!"
-      failed: "<red>âœ– <gray>Launch failed!"
-      plugin-disabled: "<red>âœ– <gray>Plugin disabled!"
-      no-use-permission: "<red>âœ– <gray>No permission!"
-      world-disabled: "<red>âœ– <gray>Disabled in this world!"
-      cannot-use-elytra: "<red>âœ– <gray>Cannot use Elytra!"
+      no-permission: "<red>✖ <gray>You don't have permission to use this command"
+      invalid-percent: "<red>✖ <gray>Percent must be between 0 and 100!"
+      invalid-format: "<red>✖ <gray>Invalid percent! Usage: <white>/rtl <0-100></white>"
+      success: "<green>✔ <gray>Launch at <#00d9ff><percent>%</#00d9ff> power!"
+      failed: "<red>✖ <gray>Launch failed!"
+      plugin-disabled: "<red>✖ <gray>Plugin disabled!"
+      no-use-permission: "<red>✖ <gray>No permission!"
+      world-disabled: "<red>✖ <gray>Disabled in this world!"
+      cannot-use-elytra: "<red>✖ <gray>Cannot use Elytra!"
     
     # Help/Usage messages
     help:
-      header: "<#00d9ff><strikethrough>â”â”â”â”â”â”</strikethrough> <bold>RelishTravel</bold> <#00d9ff><strikethrough>â”â”â”â”â”â”</strikethrough>"
+      header: "<#00d9ff><strikethrough>──────</strikethrough> <bold>RelishTravel</bold> <#00d9ff><strikethrough>──────</strikethrough>"
       reload: "<#00bfff>/rt reload <gray>- Reload configuration"
       launch: "<#00bfff>/rt launch [percent] <gray>- Fast launch"
       cleanup: "<#00bfff>/rt cleanup <gray>- Force cleanup"
-      toggle: "<#00bfff>/rt toggle <gray>- Toggle charging on/off"
+      toggle: "<#00bfff>/rt toggle [status] <gray>- Toggle charging on/off, or check status"
       rtl: "<#00bfff>/rtl [percent] <gray>- Quick launch"
-      footer: "<#00d9ff><strikethrough>â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”</strikethrough>"
+      footer: "<#00d9ff><strikethrough>────────────────────────</strikethrough>"
     
   # World restriction message
   world:
-    disabled: "<red>âœ– <gray>RelishTravel is disabled in this world!"
+    disabled: "<red>✖ <gray>RelishTravel is disabled in this world!"

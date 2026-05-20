@@ -82,6 +82,8 @@ public class RelishTravelCommand implements CommandExecutor, TabCompleter {
             suggestions.add("50");
             suggestions.add("75");
             suggestions.add("100");
+        } else if (args.length == 2 && args[0].equalsIgnoreCase("toggle")) {
+            suggestions.add("status");
         }
         
         return suggestions;

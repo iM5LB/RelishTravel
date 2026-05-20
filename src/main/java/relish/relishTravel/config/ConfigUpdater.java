@@ -18,7 +18,7 @@ public class ConfigUpdater {
     
     private final RelishTravel plugin;
     private final File configFile;
-    private static final int CURRENT_CONFIG_VERSION = 5;
+    private static final int CURRENT_CONFIG_VERSION = 6;
     
     public ConfigUpdater(RelishTravel plugin) {
         this.plugin = plugin;
@@ -71,6 +71,9 @@ public class ConfigUpdater {
         }
         if (fromVersion < 5) {
             migrateToV5(config);
+        }
+        if (fromVersion < 6) {
+            migrateToV6(config);
         }
     }
 
@@ -238,6 +241,16 @@ public class ConfigUpdater {
         config.set("charge.trigger.second", second);
         config.set("charge.trigger", null);
         plugin.getLogger().info("Config migration: converted legacy charge.trigger to charge.trigger.first/second");
+    }
+
+    private void migrateToV6(FileConfiguration config) {
+        // Add launch.boost.trigger if missing (default SNEAK = existing behaviour)
+        if (!config.contains("launch.boost.trigger")) {
+            config.set("launch.boost.trigger", "SNEAK");
+            plugin.getLogger().info("Config migration v6: added launch.boost.trigger=SNEAK");
+        } else {
+            plugin.getLogger().info("Config migration v6: no changes needed");
+        }
     }
 
     private int moveKeyIfMissing(FileConfiguration config, String fromPath, String toPath) {
