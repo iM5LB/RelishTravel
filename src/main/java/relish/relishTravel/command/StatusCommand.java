@@ -13,12 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class ToggleCommand implements CommandExecutor, TabCompleter {
+public class StatusCommand implements CommandExecutor, TabCompleter {
 
     private final RelishTravel plugin;
     private final MessageManager messages;
 
-    public ToggleCommand(RelishTravel plugin, MessageManager messages) {
+    public StatusCommand(RelishTravel plugin, MessageManager messages) {
         this.plugin = plugin;
         this.messages = messages;
     }
@@ -26,7 +26,7 @@ public class ToggleCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        // /rt toggle <player>  →  admin toggles another player
+        // /rt status <player>  →  admin checks another player
         if (args.length > 0) {
             if (!sender.hasPermission("relishtravel.toggle.others")) {
                 if (sender instanceof Player p) messages.sendMessage(p, "command.no-permission");
@@ -41,28 +41,25 @@ public class ToggleCommand implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            boolean enabled = plugin.toggleCharging(target);
+            boolean enabled = plugin.isChargingEnabled(target);
             if (sender instanceof Player p) {
                 messages.sendMessage(p,
-                        enabled ? "command.toggle.player-enabled" : "command.toggle.player-disabled",
+                        enabled ? "command.toggle.status.player-enabled" : "command.toggle.status.player-disabled",
                         Map.of("player", target.getName()));
             } else {
-                sender.sendMessage(target.getName() + " charging " + (enabled ? "enabled" : "disabled"));
+                sender.sendMessage(target.getName() + " charging: " + (enabled ? "enabled" : "disabled"));
             }
-            // Notify the target player too
-            messages.sendMessage(target,
-                    enabled ? "command.toggle.enabled" : "command.toggle.disabled");
             return true;
         }
 
-        // /rt toggle  →  self toggle
+        // /rt status  →  own status
         if (!(sender instanceof Player player)) {
             messages.sendConsoleMessage("command.help.console-usage");
             return true;
         }
-        boolean enabled = plugin.toggleCharging(player);
+        boolean enabled = plugin.isChargingEnabled(player);
         messages.sendMessage(player,
-                enabled ? "command.toggle.enabled" : "command.toggle.disabled");
+                enabled ? "command.toggle.status.enabled" : "command.toggle.status.disabled");
         return true;
     }
 

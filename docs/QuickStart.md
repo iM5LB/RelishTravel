@@ -32,9 +32,11 @@ Check console for startup banner:
 
 ## Step 4: Test Boost System
 
-1. While gliding, **press Sneak**
+1. While gliding, press **Sneak** (default trigger)
 2. You should get a speed boost
 3. Action bar shows remaining boosts
+
+> The boost trigger can be changed in config: `launch.boost.trigger: "LEFT_CLICK"` or `"RIGHT_CLICK"`
 
 ## Step 5: Configure (Optional)
 
@@ -42,11 +44,14 @@ Edit `plugins/RelishTravel/config.yml`:
 
 ```yaml
 # Quick tweaks
+charge:
+  trigger: "SNEAK_JUMP"   # SNEAK, SNEAK_JUMP, or JUMP_SNEAK
+
 launch:
-  cooldown-seconds: 60      # Reduce cooldown
-  
-boost:
-  default-limit: 5          # More boosts for everyone
+  cooldown-seconds: 60    # Reduce cooldown
+  boost:
+    trigger: "SNEAK"      # SNEAK, LEFT_CLICK, or RIGHT_CLICK
+    default-limit: 5      # More boosts for everyone
 ```
 
 Reload: `/rt reload`
@@ -66,8 +71,10 @@ Grant VIP boosts:
 ## You're Done!
 
 RelishTravel is now ready to use. Players can:
-- Sneak + Jump, land to charge and launch
-- Sneak while gliding to boost
+- Sneak + Jump, land to charge and launch (trigger configurable)
+- Sneak or Jump while gliding to boost (trigger configurable)
+- Use `/rt toggle` to disable charging temporarily
+- Use `/rt status` to check their charging state
 - Enjoy safe, controlled Elytra flight
 
 ## Next Steps

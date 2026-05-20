@@ -11,7 +11,7 @@ import relish.relishTravel.handler.LaunchHandler;
 import relish.relishTravel.handler.PersistenceHandler;
 import relish.relishTravel.handler.BoostHandler;
 import relish.relishTravel.handler.SpeedDisplayHandler;
-import relish.relishTravel.listener.BoostJumpListener;
+import relish.relishTravel.listener.BoostClickListener;
 import relish.relishTravel.listener.BoostListener;
 import relish.relishTravel.listener.ChargeListener;
 import relish.relishTravel.listener.ElytraProtectionListener;
@@ -172,7 +172,7 @@ public class RelishTravel extends JavaPlugin {
         LaunchListener launchListener = new LaunchListener(this, launchHandler, configManager, messageManager);
         SafetyListener safetyListener = new SafetyListener(this, chargeManager);
         BoostListener boostListener = new BoostListener(this, rightClickBoostHandler);
-        BoostJumpListener boostJumpListener = new BoostJumpListener(this, rightClickBoostHandler);
+        BoostClickListener boostClickListener = new BoostClickListener(this, rightClickBoostHandler);
         ElytraProtectionListener elytraProtectionListener = new ElytraProtectionListener(this, launchHandler);
         PersistenceListener persistenceListener = new PersistenceListener(this, persistenceHandler);
         UpdateNotifyListener updateNotifyListener = new UpdateNotifyListener(this);
@@ -182,7 +182,7 @@ public class RelishTravel extends JavaPlugin {
         getServer().getPluginManager().registerEvents(launchListener, this);
         getServer().getPluginManager().registerEvents(safetyListener, this);
         getServer().getPluginManager().registerEvents(boostListener, this);
-        getServer().getPluginManager().registerEvents(boostJumpListener, this);
+        getServer().getPluginManager().registerEvents(boostClickListener, this);
         getServer().getPluginManager().registerEvents(elytraProtectionListener, this);
         getServer().getPluginManager().registerEvents(persistenceListener, this);
         getServer().getPluginManager().registerEvents(updateNotifyListener, this);

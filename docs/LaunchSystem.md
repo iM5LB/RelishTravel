@@ -54,7 +54,7 @@ The launch system is the core feature of RelishTravel. Players charge up by snea
 
 **During Flight:**
 - Speed display in action bar
-- Sneak to use boosts
+- Press **Sneak**, **Left-click**, or **Right-click** to boost (depending on `launch.boost.trigger`)
 - Protected from damage
 
 ## Configuration
@@ -63,6 +63,8 @@ The launch system is the core feature of RelishTravel. Players charge up by snea
 charge:
   max-time: 2.5
   cancel-on-move: true
+  # Options: SNEAK, SNEAK_JUMP, JUMP_SNEAK
+  trigger: "SNEAK_JUMP"
 
 launch:
   min-power: 0.6
@@ -72,6 +74,11 @@ launch:
   cooldown-seconds: 120
   auto-glide: true
 ```
+
+**Charge trigger options:**
+- `SNEAK` — hold sneak to charge, release to launch
+- `SNEAK_JUMP` — sneak then jump to start charging, release sneak to launch *(default)*
+- `JUMP_SNEAK` — jump then sneak to start charging, release sneak to launch
 
 ## Power Mechanics
 

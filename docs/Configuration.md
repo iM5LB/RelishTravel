@@ -16,7 +16,16 @@ check-for-updates: true
 charge:
   max-time: 2.5           # Seconds to full charge
   cancel-on-move: true    # Cancel if player moves
+
+  # Charging trigger
+  # Options: SNEAK, SNEAK_JUMP, JUMP_SNEAK
+  trigger: "SNEAK_JUMP"
 ```
+
+**Trigger options:**
+- `SNEAK` — hold sneak to charge, release to launch
+- `SNEAK_JUMP` — sneak then jump to start charging, release sneak to launch
+- `JUMP_SNEAK` — jump then sneak to start charging, release sneak to launch
 
 ## Launch Settings
 
@@ -40,12 +49,16 @@ launch:
     speed: 2.0
     cooldown-seconds: 5
     allow-for-normal-elytra: true
-    
+
+    # Boost trigger while gliding: SNEAK, LEFT_CLICK, or RIGHT_CLICK
+    trigger: "SNEAK"
+
     permission-limits:
       "relishtravel.boost.vip": 5
+      "relishtravel.boost.vip-plus": 7
       "relishtravel.boost.premium": 10
       "relishtravel.boost.unlimited": -1
-    
+
     default-limit: 3  # For players without permissions
 ```
 

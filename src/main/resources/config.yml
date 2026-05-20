@@ -67,8 +67,9 @@ launch:
 
     # Boost trigger action while gliding
     # Options:
-    #   SNEAK - Sneak while gliding to boost
-    #   JUMP  - Jump while gliding to boost
+    #   SNEAK       - Sneak while gliding to boost
+    #   LEFT_CLICK  - Left-click while gliding to boost
+    #   RIGHT_CLICK - Right-click while gliding to boost
     trigger: "SNEAK"
 
     # Permission-based boost limits
@@ -164,4 +165,4 @@ achievements:
   # Customize the achievement
   custom-achievement:
     title: "Sky Traveler"
-    description: "Soar through the skies with RelishTravel. Sneak while gliding to boost!"
+    description: "Soar through the skies with RelishTravel. Boost while gliding!"

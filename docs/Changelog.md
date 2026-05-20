@@ -10,10 +10,13 @@ All notable changes to RelishTravel.
 - Added `launch.boost.trigger` config option to control how the boost is activated while gliding.
 - Valid values:
   - `SNEAK` — sneak while gliding to boost (default, existing behaviour)
-  - `JUMP` — press jump while gliding to boost
+  - `LEFT_CLICK` — left-click while gliding to boost
+  - `RIGHT_CLICK` — right-click while gliding to boost
 
-**Toggle Status:**
-- Added `/rt toggle status` to check whether charging is currently enabled or disabled for you.
+**Toggle & Status Commands:**
+- `/rt toggle [player]` — toggle your own charging on/off, or an admin can toggle another player's charging.
+- `/rt status [player]` — check your own charging state, or an admin can check another player's state.
+- New permission `relishtravel.toggle.others` (default: `op`) required to target other players.
 
 ### Fixed
 

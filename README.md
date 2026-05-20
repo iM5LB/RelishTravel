@@ -57,7 +57,7 @@ RelishTravel transforms Elytra flight with charge-based launching, mid-air boost
 </div>
 
 ### Boost System
-- Sneak while gliding for speed bursts
+- Sneak, **Left-click**, or **Right-click** while gliding for speed bursts (configurable via `launch.boost.trigger`)
 - Permission-based limits (VIP: 5, Premium: 10, Unlimited)
 - Configurable cooldown (default 5s)
 - Works with normal Elytra too
@@ -112,9 +112,15 @@ RelishTravel transforms Elytra flight with charge-based launching, mid-air boost
 
 | Command | Description | Permission |
 |---------|-------------|------------|
-| `/rt` | Main command | `relishtravel.use` |
-| `/rtl [percent]` | Quick launch | `relishtravel.fastlaunch` |
+| `/rt` | Show help | `relishtravel.use` |
+| `/rt toggle` | Toggle your charging on/off | `relishtravel.use` |
+| `/rt toggle <player>` | Toggle another player's charging | `relishtravel.toggle.others` |
+| `/rt status` | Check your charging state | `relishtravel.use` |
+| `/rt status <player>` | Check another player's charging state | `relishtravel.toggle.others` |
+| `/rt launch [percent]` | Launch at set power | `relishtravel.fastlaunch` |
 | `/rt reload` | Reload config | `relishtravel.reload` |
+| `/rt cleanup` | Force cleanup temp Elytra | `relishtravel.use` |
+| `/rtl [percent]` | Quick launch shortcut | `relishtravel.fastlaunch` |
 
 **Aliases:** `/rt`, `/rtravel`, `/relishtravel`
 
@@ -126,19 +132,23 @@ RelishTravel transforms Elytra flight with charge-based launching, mid-air boost
 ```yaml
 language: "en"  # or "ar" for Arabic
 
+charge:
+  trigger: "SNEAK_JUMP"  # SNEAK, SNEAK_JUMP, or JUMP_SNEAK
+
 launch:
   cooldown-seconds: 120
   min-power: 0.6
   max-power: 1.4
   auto-glide: true
 
-boost:
-  enabled: true
-  default-limit: 3
-  permission-limits:
-    "relishtravel.boost.vip": 5
-    "relishtravel.boost.premium": 10
-    "relishtravel.boost.unlimited": -1
+  boost:
+    enabled: true
+    trigger: "SNEAK"  # SNEAK, LEFT_CLICK, or RIGHT_CLICK
+    default-limit: 3
+    permission-limits:
+      "relishtravel.boost.vip": 5
+      "relishtravel.boost.premium": 10
+      "relishtravel.boost.unlimited": -1
 
 elytra:
   allow-virtual: true
@@ -166,9 +176,12 @@ elytra:
 ### Admin Permissions
 | Permission | Description | Default |
 |------------|-------------|---------|
-| `relishtravel.admin` | Admin features | `op` |
+| `relishtravel.admin` | Admin features & update notifications | `op` |
 | `relishtravel.reload` | Reload config | `op` |
-| `relishtravel.bypass.cooldown` | Bypass cooldowns | `op` |
+| `relishtravel.toggle.others` | Toggle/check charging for other players | `op` |
+| `relishtravel.bypass.cooldown` | Bypass launch cooldowns | `op` |
+| `relishtravel.bypass.boost-cooldown` | Bypass boost cooldowns | `op` |
+| `relishtravel.bypass.disabled-worlds` | Use in disabled worlds | `op` |
 
 ---
 

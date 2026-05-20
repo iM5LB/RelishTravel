@@ -249,7 +249,14 @@ public class ConfigUpdater {
             config.set("launch.boost.trigger", "SNEAK");
             plugin.getLogger().info("Config migration v6: added launch.boost.trigger=SNEAK");
         } else {
-            plugin.getLogger().info("Config migration v6: no changes needed");
+            // Sanitize: JUMP is no longer a valid trigger, replace with SNEAK
+            String current = config.getString("launch.boost.trigger", "SNEAK");
+            if (current != null && current.trim().equalsIgnoreCase("JUMP")) {
+                config.set("launch.boost.trigger", "SNEAK");
+                plugin.getLogger().info("Config migration v6: replaced invalid trigger JUMP -> SNEAK");
+            } else {
+                plugin.getLogger().info("Config migration v6: no changes needed");
+            }
         }
     }
 

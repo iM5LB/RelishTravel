@@ -56,9 +56,14 @@ messages:
     toggle:
       enabled: "<green>✔ <gray>Charging enabled."
       disabled: "<red>✖ <gray>Charging disabled."
+      player-enabled: "<green>✔ <gray>Charging enabled for <white><player></white>."
+      player-disabled: "<red>✖ <gray>Charging disabled for <white><player></white>."
+      player-not-found: "<red>✖ <gray>Player not found!"
       status:
-        enabled: "<#00d9ff>⚡ <gray>Charging is currently <green>enabled</green>."
-        disabled: "<#00d9ff>⚡ <gray>Charging is currently <red>disabled</red>."
+        enabled: "<#00d9ff>⚡ <gray>Your charging is <green>enabled</green>."
+        disabled: "<#00d9ff>⚡ <gray>Your charging is <red>disabled</red>."
+        player-enabled: "<#00d9ff>⚡ <gray><white><player></white> charging is <green>enabled</green>."
+        player-disabled: "<#00d9ff>⚡ <gray><white><player></white> charging is <red>disabled</red>."
     
     # Launch command messages
     launch:
@@ -78,7 +83,8 @@ messages:
       reload: "<#00bfff>/rt reload <gray>- Reload configuration"
       launch: "<#00bfff>/rt launch [percent] <gray>- Fast launch"
       cleanup: "<#00bfff>/rt cleanup <gray>- Force cleanup"
-      toggle: "<#00bfff>/rt toggle [status] <gray>- Toggle charging on/off, or check status"
+      toggle: "<#00bfff>/rt toggle [player] <gray>- Toggle your charging on/off"
+      status: "<#00bfff>/rt status [player] <gray>- Check charging status"
       rtl: "<#00bfff>/rtl [percent] <gray>- Quick launch"
       footer: "<#00d9ff><strikethrough>────────────────────────</strikethrough>"
     

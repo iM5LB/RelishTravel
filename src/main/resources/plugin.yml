@@ -9,7 +9,7 @@ website: https://modrinth.com/plugin/relishtravel
 commands:
   relishtravel:
     description: Main RelishTravel command
-    usage: /<command> [reload|launch <percent>|cleanup|toggle [status]]
+    usage: /<command> [reload|launch <percent>|cleanup|toggle [player]|status [player]]
     aliases: [rt, rtravel]
     permission: relishtravel.use
   
@@ -24,6 +24,9 @@ permissions:
     default: true
   relishtravel.admin:
     description: Receive update notifications and admin features
+    default: op
+  relishtravel.toggle.others:
+    description: Toggle or check charging state for other players
     default: op
   relishtravel.reload:
     description: Allows reloading the plugin configuration
