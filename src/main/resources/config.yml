@@ -1,0 +1,168 @@
+# RelishTravel Configuration
+# A safe, controlled Elytra launch system for Minecraft 1.20+
+
+# Configuration version (DO NOT EDIT - Used for automatic config updates)
+config-version: 6
+
+# Language setting (en = English, ar = Arabic)
+# Language files are stored in plugins/RelishTravel/lang/
+language: "en"
+
+# Debug mode - shows detailed messages for troubleshooting
+debug: false
+
+# Check for updates on startup and notify admins
+check-for-updates: true
+
+# Charge mechanics configuration
+charge:
+  # Maximum time in seconds to fully charge (2.5 seconds default)
+  max-time: 2.5
+
+  # Charging trigger
+  # Options:
+  #   SNEAK       - Hold sneak to charge, release sneak to launch
+  #   SNEAK_JUMP  - Sneak then jump to start charging, release sneak to launch
+  #   JUMP_SNEAK  - Jump then sneak to start charging, release sneak to launch
+  trigger: "SNEAK_JUMP"
+  
+  # Cancel charging if player moves
+  cancel-on-move: true
+
+# Launch mechanics configuration
+launch:
+  # Minimum forward power multiplier (0.6 default)
+  min-power: 0.6
+  
+  # Maximum forward power multiplier (1.4 default)
+  max-power: 1.4
+  
+  # Forward momentum multiplier (0.3 = small forward push)
+  forward-momentum: 0.3
+  
+  # Vertical boost multiplier (1.5 = strong upward)
+  vertical-boost: 1.5
+  
+  # Cooldown between launches in seconds
+  cooldown-seconds: 120
+  
+  # Automatically open Elytra and start gliding when falling
+  auto-glide: true
+  
+  # Speed boost when pressing forward during glide
+  forward-boost-speed: 1.0
+  # Firework sound when forward-boost triggers (set false to disable only this sound)
+  forward-boost-sound-enabled: true
+
+  # Sound when auto-glide forces Elytra equip sound
+  auto-glide-equip-sound-enabled: true
+  
+  # Boost configuration
+  boost:
+    enabled: true
+    speed: 2.0
+    cooldown-seconds: 5
+    allow-for-normal-elytra: true  # Allow boost for normal elytra users (not just RelishTravel launches)
+    sound-enabled: true  # Sound when a boost is used
+
+    # Boost trigger action while gliding
+    # Options:
+    #   SNEAK       - Sneak while gliding to boost
+    #   LEFT_CLICK  - Left-click while gliding to boost
+    #   RIGHT_CLICK - Right-click while gliding to boost
+    trigger: "SNEAK"
+
+    # Permission-based boost limits
+    # Players will get the highest limit from all permissions they have
+    # Use -1 for unlimited boosts
+    permission-limits:
+      "relishtravel.boost.vip": 5
+      "relishtravel.boost.vip-plus": 7
+      "relishtravel.boost.premium": 10
+      "relishtravel.boost.unlimited": -1
+    
+    # Default limit for players without any boost permission (0 = no boosts)
+    default-limit: 3
+
+# Elytra handling configuration
+elytra:
+  # Allow virtual/temporary Elytra for players without one equipped
+  allow-virtual: true
+  
+  # Automatically equip Elytra from inventory if not equipped
+  auto-equip-from-inventory: true
+  
+  # Prevent damage while gliding with Elytra
+  prevent-fall-damage: true  # Prevents fall damage after landing
+  prevent-kinetic-damage: true  # Prevents hitting walls/ground at high speed
+
+# World restrictions
+worlds:
+  # List of worlds where RelishTravel is disabled
+  disabled-worlds:
+    - "world_nether"
+    - "world_the_end"
+
+# Visual and audio effects
+effects:
+  speed-display: true  # Show speed during glide
+  boost-display: true  # Show boost counter in action bar
+  action-bar-update-ticks: 4  # Update action bar every X ticks (4 = 5x per second) - affects speed display and charge progress
+
+  # HUD display mode for speed/boost info
+  # Options: ACTION_BAR, BOSSBAR, OFF
+  # - ACTION_BAR: action bar only
+  # - BOSSBAR: boss bar only
+  # - OFF: disable HUD
+  hud:
+    mode: "ACTION_BAR"
+    bossbar:
+      # BossBar appearance (when mode is BOSSBAR)
+      # Colors: PINK, BLUE, RED, GREEN, YELLOW, PURPLE, WHITE
+      color: "BLUE"
+      # Overlays: PROGRESS, NOTCHED_6, NOTCHED_10, NOTCHED_12, NOTCHED_20
+      overlay: "PROGRESS"
+
+  # Charging sound configuration (sneak + jump charge)
+  # Only affects charging sounds.
+  charge-sound:
+    enabled: true
+    type: "BLOCK_BEACON_ACTIVATE"
+    volume: 0.5  # Volume (0.0 to 1.0)
+    pitch-min: 0.5  # Minimum pitch during charge
+    pitch-max: 2.0  # Maximum pitch when fully charged
+  
+  # Particle configuration
+  particles: true
+  particle-type: "ELECTRIC_SPARK"
+  particle-count: 5  # Number of particles per spawn
+  particle-radius-min: 0.5  # Minimum particle radius
+  particle-radius-max: 1.0  # Maximum particle radius when charged
+  
+  # Launch sound configuration
+  launch-sound-enabled: true
+  launch-sound-volume: 1.0
+  launch-sound-pitch: 1.5
+
+# Velocity caps (prevent exploits)
+velocity:
+  max-horizontal: 3.0  # Maximum horizontal speed
+  max-vertical: 2.0  # Maximum vertical speed
+
+# Safety settings
+safety:
+  # Minimum number of blocks above player that must be clear to allow launch
+  glide-height-threshold: 5
+
+# Achievement settings
+achievements:
+  # Block vanilla Minecraft elytra achievements when using virtual/temporary elytra
+  block-vanilla-achievements: true
+  
+  # Grant custom RelishTravel achievement as replacement
+  grant-relish-achievement: true
+  
+  # Customize the achievement
+  custom-achievement:
+    title: "Sky Traveler"
+    description: "Soar through the skies with RelishTravel. Boost while gliding!"

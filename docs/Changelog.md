@@ -1,0 +1,149 @@
+﻿# Changelog
+
+All notable changes to RelishTravel.
+
+## [1.0.7] - 2026-06-30
+
+### Fixed
+
+**Elytra:**
+- Fixed an item duplication issue that could occur during an active launch.
+
+## [1.0.6] - 2026-05-20
+
+### Added
+
+**Boost Trigger:**
+- Added `launch.boost.trigger` config option to control how the boost is activated while gliding.
+- Valid values:
+  - `SNEAK` — sneak while gliding to boost (default, existing behaviour)
+  - `LEFT_CLICK` — left-click while gliding to boost
+  - `RIGHT_CLICK` — right-click while gliding to boost
+
+**Toggle & Status Commands:**
+- `/rt toggle [player]` — toggle your own charging on/off, or an admin can toggle another player's charging.
+- `/rt status [player]` — check your own charging state, or an admin can check another player's state.
+- New permission `relishtravel.toggle.others` (default: `op`) required to target other players.
+
+### Fixed
+
+**Language Files:**
+- Restored broken emoji/unicode characters (`⚡`, `✖`, `⌛`, `✔`, `─`) in `en.yml` that were corrupted by a UTF-8 encoding issue.
+
+## [1.0.5] - 2026-05-04
+
+### Changed
+
+**Charging Trigger:**
+- Added `charge.trigger` option.
+- Valid values:
+  - `SNEAK` — hold sneak to charge, release sneak to launch
+  - `SNEAK_JUMP` — sneak then jump to start charging, release sneak to launch
+  - `JUMP_SNEAK` — jump then sneak to start charging, release sneak to launch
+- Added `/rt toggle` to enable/disable charging per-player.
+
+## [1.0.4] - 2026-04-29
+
+### Changed
+
+**HUD:**
+- Added more HUD modes `ACTION_BAR`, `BOSSBAR`, or `OFF`.
+
+**Sounds:**
+- Sounds are now configured per feature:
+  - Charging: `effects.charge-sound.enabled`
+  - Launch: `effects.launch-sound-enabled`
+  - Forward boost firework: `launch.forward-boost-sound-enabled`
+  - Auto-glide equip sound: `launch.auto-glide-equip-sound-enabled`
+  - Boost use: `launch.boost.sound-enabled`
+
+**Charging Trigger:**
+- Charging input is now configurable as two actions:
+  - `charge.trigger.first`: `SNEAK` or `JUMP`
+  - `charge.trigger.second`: `SNEAK`, `JUMP`, or `NONE`
+- Supports “double action” setups by setting `first == second` (example: double sneak).
+
+### Fixed
+
+**Config Updates:**
+- Improved config merge/migrations for nested keys and new sections.
+- Added migration from legacy `charge.trigger` (string) to `charge.trigger.first/second`.
+
+## [1.0.3] - 2026-03-17
+
+### Fixed
+
+**Boost Permission Limits:**
+- Fixed custom boost permission nodes not being recognized from config when keys contain dots (example: `relishtravel.boost.vip-plus`).
+- Permission limits now take precedence when the player has any matching boost permission; `default-limit` is only used when none match.
+
+**Normal Elytra Boosting:**
+- Fixed an exploit where players gliding with a normal Elytra (no RelishTravel launch) could get effectively unlimited boosts.
+- Action bar now correctly shows the boost counter while gliding with a normal Elytra.
+
+**LuckPerms / Reload:**
+- Dynamic boost permission nodes from `launch.boost.permission-limits` are now registered on startup and `/rt reload` so permission suggestions can appear.
+
+## [1.0.2] - 2026-02-15
+
+### Fixed
+
+**Achievement System:**
+- Fixed custom RelishTravel achievement being granted repeatedly on later launches.
+- Added persistent per-player tracking so each player only receives the custom achievement once.
+
+**Custom Achievement Message:**
+- Updated announcement to a more vanilla-like style with white main text.
+- Kept achievement title in green and changed hover text to green.
+- Formatted announcement output into 2 lines.
+
+## [1.0.1] - 2026-02-11
+
+### Fixed
+
+**Achievement System:**
+- Fixed Elytra advancement detection for modern vanilla key `end/elytra` (kept legacy fallbacks).
+- Added criterion-level cancellation using Paper's `PlayerAdvancementCriterionGrantEvent` to better block vanilla Elytra advancement when using virtual RelishTravel Elytra.
+- Kept fallback advancement criteria revocation for compatibility.
+- Added duplicate-message protection so custom achievement announcements are not broadcast twice.
+
+**Custom Achievement Message:**
+- Removed forced player name color to match vanilla style.
+- Replaced plain chat description line with hover text on `[Sky Traveler]`.
+- Switched custom announcement to Adventure components for proper hover support.
+
+## [1.0.0] - 2026-02-09
+
+### Initial Release
+
+**Features:**
+- ⚡ Charge-based launch system
+- 🚀 Mid-air boost mechanics
+- 🛡️ Safety features and damage prevention
+- 🎨 Visual effects (particles, sounds, action bar)
+- 🌍 Multi-language support (EN, AR)
+- 🔧 Extensive configuration options
+- 🔑 Permission-based boost limits
+- 🛠️ Virtual Elytra support
+
+**Technical:**
+- Minecraft 1.20+
+- Paper/Purpur support
+- Java 17+
+- Standalone (no dependencies)
+
+---
+
+## Upcoming Features
+
+### Planned for 1.1.0
+- PlaceholderAPI integration
+- Statistics tracking
+- More languages
+---
+
+## Support
+
+- **Discord**: [Join server](https://discord.gg/jDr2KZcGXk)
+- **GitHub**: [View source](https://github.com/iM5LB/relishtravel)
+- **Issues**: [Report bugs](https://github.com/iM5LB/relishtravel/issues)
