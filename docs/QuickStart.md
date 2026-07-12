@@ -13,7 +13,7 @@ Get RelishTravel up and running in 5 minutes!
 Check console for startup banner:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  RELISH TRAVEL  v1.0.6
+  RELISH TRAVEL  v1.0.8
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   ▶ Status: Enabled
   ▶ Load Time: 45ms
@@ -91,9 +91,10 @@ RelishTravel is now ready to use. Players can:
 - Ensure you're not in water/lava
 - Need 5 blocks of clear space above
 
-**No Elytra?**
-- Enable `allow-virtual: true` in config
-- Or enable `auto-equip-from-inventory: true`
+**No Elytra / wearing chestplate?**
+- Enable `allow-virtual: true` for players without an Elytra
+- Enable `auto-equip-from-inventory: true` to pull Elytra from any inventory slot
+- Enable `auto-swap-chestplate: true` to swap a worn chestplate with an Elytra automatically
 
 **Boosts not working?**
 - Check `boost.enabled: true` in config

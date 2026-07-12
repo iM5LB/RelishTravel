@@ -18,7 +18,7 @@ public class ConfigUpdater {
     
     private final RelishTravel plugin;
     private final File configFile;
-    private static final int CURRENT_CONFIG_VERSION = 6;
+    private static final int CURRENT_CONFIG_VERSION = 7;
     
     public ConfigUpdater(RelishTravel plugin) {
         this.plugin = plugin;
@@ -74,6 +74,9 @@ public class ConfigUpdater {
         }
         if (fromVersion < 6) {
             migrateToV6(config);
+        }
+        if (fromVersion < 7) {
+            migrateToV7(config);
         }
     }
 
@@ -257,6 +260,16 @@ public class ConfigUpdater {
             } else {
                 plugin.getLogger().info("Config migration v6: no changes needed");
             }
+        }
+    }
+
+    private void migrateToV7(FileConfiguration config) {
+        // Add elytra.auto-swap-chestplate if missing (default false = preserve old behaviour)
+        if (!config.contains("elytra.auto-swap-chestplate")) {
+            config.set("elytra.auto-swap-chestplate", false);
+            plugin.getLogger().info("Config migration v7: added elytra.auto-swap-chestplate=false");
+        } else {
+            plugin.getLogger().info("Config migration v7: no changes needed");
         }
     }
 

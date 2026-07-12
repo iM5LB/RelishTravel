@@ -41,6 +41,8 @@ messages:
     cannot-remove-during-flight: "<red>✖ <gray>لا يمكن إزالة Elytra أثناء الطيران!"
     cannot-drop-during-flight: "<red>✖ <gray>لا يمكن إسقاط Elytra أثناء الطيران!"
     cannot-swap-during-flight: "<red>✖ <gray>لا يمكن تبديل الدروع أثناء الطيران!"
+    elytra-equipped: "<#00d9ff>⚡ <gray>تم تجهيز Elytra — تم إزاحة صدرية الدرع!"
+    chestplate-restored: "<#00d9ff>⚡ <gray>تمت إعادة تجهيز صدرية الدرع!"
     
   # رسائل التعزيز
   boost:

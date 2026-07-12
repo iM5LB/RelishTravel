@@ -56,7 +56,7 @@ public class RelishTravel extends JavaPlugin {
             this.chargeManager = new ChargeManager(this);
             debug("ChargeManager initialized");
             
-            this.elytraHandler = new ElytraHandler(this, configManager);
+            this.elytraHandler = new ElytraHandler(this, configManager, messageManager);
             debug("ElytraHandler initialized");
             
             this.launchHandler = new LaunchHandler(this, configManager, messageManager, chargeManager, elytraHandler);

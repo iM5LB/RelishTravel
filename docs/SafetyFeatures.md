@@ -21,7 +21,11 @@ Before allowing launch:
 - Not already flying
 - Clear space above (5 blocks default)
 - Chunks loaded ahead
-- Valid equipment
+- Chest slot must be empty, contain an Elytra, or `auto-swap-chestplate: true` must be enabled with an Elytra available
+
+## Chestplate Auto-Swap
+
+When `elytra.auto-swap-chestplate: true`, players wearing a chestplate can launch normally. RelishTravel moves the chestplate to a free inventory slot and equips the Elytra. On landing the swap is reversed automatically. The chestplate is tagged with a hidden session ID so it is found correctly even if moved mid-flight.
 
 ## Obstruction Detection
 

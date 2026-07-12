@@ -4,6 +4,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import relish.relishTravel.config.ConfigManager;
 import relish.relishTravel.message.MessageManager;
 
@@ -103,9 +104,26 @@ public class SafetyValidator {
     
     private boolean isChestSlotValid(Player player) {
         var chest = player.getInventory().getChestplate();
-        return chest == null || 
-               chest.getType() == Material.AIR || 
-               chest.getType() == Material.ELYTRA;
+        if (chest == null || chest.getType() == Material.AIR || chest.getType() == Material.ELYTRA) {
+            return true;
+        }
+        // If auto-swap is enabled the chestplate will be moved aside at launch time.
+        // Valid as long as there is somewhere to get an elytra (inventory, offhand, or virtual).
+        if (config.isAutoSwapChestplate()) {
+            if (config.isAllowVirtual()) {
+                return true; // virtual elytra will be created regardless
+            }
+            if (config.isAutoEquipFromInventory()) {
+                // Check storage inventory
+                for (ItemStack item : player.getInventory().getStorageContents()) {
+                    if (item != null && item.getType() == Material.ELYTRA) return true;
+                }
+                // Check offhand
+                ItemStack offhand = player.getInventory().getItemInOffHand();
+                if (offhand != null && offhand.getType() == Material.ELYTRA) return true;
+            }
+        }
+        return false;
     }
     
     private boolean hasSufficientVerticalSpace(Player player, MessageManager messages) {

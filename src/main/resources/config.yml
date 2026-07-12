@@ -2,7 +2,7 @@
 # A safe, controlled Elytra launch system for Minecraft 1.20+
 
 # Configuration version (DO NOT EDIT - Used for automatic config updates)
-config-version: 6
+config-version: 7
 
 # Language setting (en = English, ar = Arabic)
 # Language files are stored in plugins/RelishTravel/lang/
@@ -91,6 +91,12 @@ elytra:
   
   # Automatically equip Elytra from inventory if not equipped
   auto-equip-from-inventory: true
+
+  # Automatically swap chestplate with Elytra on launch, then restore it on landing.
+  # Requires auto-equip-from-inventory: true and an Elytra somewhere in the player's inventory.
+  # Useful for RPG/roleplay servers where players wear armor but still own an Elytra for flight.
+  # When disabled (default), the chest slot must be empty or already hold an Elytra to launch.
+  auto-swap-chestplate: false
   
   # Prevent damage while gliding with Elytra
   prevent-fall-damage: true  # Prevents fall damage after landing

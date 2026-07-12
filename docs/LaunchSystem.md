@@ -183,12 +183,20 @@ launch:
 elytra:
   allow-virtual: true
   auto-equip-from-inventory: true
+  auto-swap-chestplate: false  # Set true to swap with a worn chestplate
 ```
+
+**`auto-swap-chestplate`:**
+- When `true`, players wearing a chestplate can launch normally — RelishTravel moves the chestplate to a free inventory slot and equips the Elytra automatically.
+- On landing, the Elytra is returned to its original slot and the chestplate is re-equipped.
+- Works with any inventory slot or offhand for the Elytra source.
+- Falls back to virtual Elytra if no real one is found and `allow-virtual: true`.
+- If the player drops the tagged chestplate during flight it will not be re-equipped.
 
 **Benefits:**
 - Everyone can use RelishTravel
-- No Elytra required
-- Automatic management
+- No manual armor swapping required
+- Automatic management with zero item loss
 
 ## Advanced Configuration
 

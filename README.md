@@ -17,6 +17,7 @@ RelishTravel transforms Elytra flight with charge-based launching, mid-air boost
 🛡️ **Safety Features** - Damage prevention and obstruction detection  
 🎨 **Visual Effects** - Particles, sounds, and action bar displays  
 🌍 **Multi-Language** - English and Arabic support  
+🔄 **Chestplate Auto-Swap** - Wear armor normally; Elytra deploys on launch and retracts on landing
 
 ---
 
@@ -152,6 +153,8 @@ launch:
 
 elytra:
   allow-virtual: true
+  auto-equip-from-inventory: true
+  auto-swap-chestplate: false  # true = swap chestplate ↔ Elytra on launch/land
   prevent-fall-damage: true
   prevent-kinetic-damage: true
 ```

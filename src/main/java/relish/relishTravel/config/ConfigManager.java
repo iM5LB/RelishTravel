@@ -201,6 +201,10 @@ public class ConfigManager {
     public boolean isAutoEquipFromInventory() {
         return config.getBoolean("elytra.auto-equip-from-inventory", true);
     }
+
+    public boolean isAutoSwapChestplate() {
+        return config.getBoolean("elytra.auto-swap-chestplate", false);
+    }
     
     public List<String> getDisabledWorlds() {
         return config.getStringList("worlds.disabled-worlds");

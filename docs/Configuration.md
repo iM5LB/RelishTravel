@@ -72,10 +72,18 @@ launch:
 ```yaml
 elytra:
   allow-virtual: true                # Virtual Elytra for players without one
-  auto-equip-from-inventory: true    # Auto-equip from inventory
+  auto-equip-from-inventory: true    # Auto-equip from any inventory slot or offhand
+  auto-swap-chestplate: false        # Swap chestplate ↔ Elytra on launch/land
   prevent-fall-damage: true
   prevent-kinetic-damage: true
 ```
+
+**`auto-swap-chestplate`** — when `true`, players can launch while wearing a chestplate. RelishTravel moves the chestplate to a free inventory slot, equips the Elytra (from inventory/offhand, or virtual), and re-equips the chestplate automatically on landing. The chestplate is tagged with a hidden session ID so it is found and restored correctly even if the player moves it mid-flight.
+
+- Requires `auto-equip-from-inventory: true` to use a real Elytra from inventory.
+- Falls back to virtual Elytra if no real one is found and `allow-virtual: true`.
+- If the player drops the chestplate during flight it will not be re-equipped (it was their choice).
+- Ideal for RPG/roleplay servers where players wear armor but still own an Elytra.
 
 ## World Restrictions
 

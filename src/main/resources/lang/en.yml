@@ -41,6 +41,8 @@ messages:
     cannot-remove-during-flight: "<red>✖ <gray>Cannot remove Elytra during flight!"
     cannot-drop-during-flight: "<red>✖ <gray>Cannot drop Elytra during flight!"
     cannot-swap-during-flight: "<red>✖ <gray>Cannot swap armor during flight!"
+    elytra-equipped: "<#00d9ff>⚡ <gray>Elytra equipped — chestplate swapped out!"
+    chestplate-restored: "<#00d9ff>⚡ <gray>Chestplate re-equipped!"
     
   # Boost messages
   boost:
