@@ -1,6 +1,6 @@
 # RelishTravel Documentation
 
-![RelishTravel](assets/RelishTravelRaw.png)
+![RelishTravel](assets/RelishTravelBanner.png)
 
 Official documentation for **RelishTravel** — safe, controlled Elytra launch and boost for Paper 1.20+.
 
