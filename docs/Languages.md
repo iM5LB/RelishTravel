@@ -55,12 +55,12 @@ Keep these in your translations:
 
 ```yaml
 # lang/es.yml
-prefix: "<gradient:#00d9ff:#00bfff>⚡ RelishTravel</gradient> <dark_gray>|</dark_gray> "
+prefix: "<gradient:#00d9ff:#00bfff> RelishTravel</gradient> <dark_gray>|</dark_gray> "
 
 messages:
   charge:
-    progress: "<gradient:#00d9ff:#00bfff>⚡ Cargando: <charge>%</gradient> <bar>"
-    cancelled-moved: "<red>✖ <gray>¡Carga cancelada - te moviste!"
+    progress: "<gradient:#00d9ff:#00bfff> Cargando: <charge>%</gradient> <bar>"
+    cancelled-moved: "<red> <gray>¡Carga cancelada - te moviste!"
   
   launch:
     cooldown: "<#00d9ff>⌛ <gray>Espera <white><time></white> antes de lanzar"

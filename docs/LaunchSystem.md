@@ -21,11 +21,11 @@ The launch system is the core feature of RelishTravel. Players charge up by snea
 
 **Charge Progress:**
 ```
-⚡ Charging: 0%  ░░░░░░░░░░
-⚡ Charging: 25% ██░░░░░░░░
-⚡ Charging: 50% █████░░░░░
-⚡ Charging: 75% ███████░░░
-⚡ Charging: 100% ██████████
+ Charging: 0%  ░░░░░░░░░░
+ Charging: 25% ██░░░░░░░░
+ Charging: 50% █████░░░░░
+ Charging: 75% ███████░░░
+ Charging: 100% ██████████
 ```
 
 **Charge Duration:**
